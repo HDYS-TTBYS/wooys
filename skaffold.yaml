@@ -1,0 +1,19 @@
+apiVersion: skaffold/v2beta4
+kind: Config
+metadata:
+  name: wooys
+build:
+  artifacts:
+    - image: hdys/wooys-nginx
+      context: nginx
+      docker:
+        dockerfile: Dockerfile
+    - image: hdys/wooys-django
+      context: app
+      docker:
+        dockerfile: Dockerfile.prod
+
+deploy:
+  kubectl:
+    manifests:
+      - kube_skaffold/skaffold_wooys.yml

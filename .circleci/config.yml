@@ -1,0 +1,86 @@
+version: 2
+jobs:
+  test:
+    machine:
+      image: circleci/classic:edge
+    steps:
+      - checkout
+      - run:
+          name: docker-compose up
+          command: docker-compose up --build -d
+      - run:
+          name: sleep
+          command: sleep 5
+      - run:
+          name: test
+          command: docker-compose exec django python manage.py test
+
+  build:
+    docker:
+      - image: docker:19.03
+    steps:
+      - run:
+          name: set shell and install tools
+          command: |
+            set -x; \
+            apk add --no-cache --virtual .fetch-deps curl git python py-pip less groff
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: install kubectl
+          command: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl && \
+            chmod +x ./kubectl && \
+            mv ./kubectl /usr/local/bin/kubectl
+
+      - run:
+          name: install container-structure-test
+          command: |
+            curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && \
+            chmod +x container-structure-test-linux-amd64 && \
+            mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+      - run:
+          name: install aws cli
+          command: pip install awscli
+
+      - run:
+          name: install aws-iam-authenticator
+          command: |
+            curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/darwin/amd64/aws-iam-authenticator && \
+            chmod +x ./aws-iam-authenticator && \
+            mv ./aws-iam-authenticator /usr/local/bin
+
+      - run:
+          name: setup kubeconfig
+          command: aws eks update-kubeconfig --name wooys
+
+      - run:
+          name: login to dockerhub
+          command: docker login -u ${DOCKER_HUB_USR} -p ${DOCKER_HUB_PASSWD}
+
+      - run:
+          name: install skaffold
+          command: |
+            curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.7.0/skaffold-linux-amd64 && chmod +x skaffold && mv skaffold /usr/local/bin
+
+      - run:
+          name: skaffold run
+          command: skaffold run
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only:
+                - test
+                - deploy
+      - build:
+          requires:
+            - test
+          filters:
+            branches:
+              only: deploy
