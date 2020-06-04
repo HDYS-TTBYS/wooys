@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
     'storages',
 
-    'app.apps.wooys'
+    'wooys.apps.WooysConfig'
 ]
 
 MIDDLEWARE = [
