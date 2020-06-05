@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    # default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # install
     'storages',
+    'django_ses',
 
-    'wooys.apps.WooysConfig'
+    # 自作
+    'wooys.apps.WooysConfig',
 ]
 
 MIDDLEWARE = [
@@ -121,7 +125,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+# S3 設定
 USE_S3 = os.getenv('USE_S3') == 'TRUE'
 
 if USE_S3:
@@ -145,7 +149,13 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
+# SES設定
+AWS_SES_ACCESS_KEY_ID = os.environ.get("AWS_SES_ACCESS_KEY_ID")
+AWS_SES_SECRET_ACCESS_KEY = os.environ.get("AWS_SES_SECRET_ACCESS_KEY")
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND")
 
+
+# ロガー設定
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
