@@ -162,6 +162,25 @@ EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND")
 # ユーザーモデル
 AUTH_USER_MODEL = "accounts.CustomUser"
 
+# auth
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+    # 一般（メールアドレス）
+    'allauth.accounts.auth_backends.AuthenticationBackend',
+    # 管理者（ユーザーネーム）
+    'django.contrib.auth.backends.ModelBackend',
+)
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # 認証方法をメールアドレスにする
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'  # Userモデルのusername
+ACCOUNT_USERNAME_REQUIRED = True  # ユーザー名を要求する
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_REQUIRED = True  # メールアドレスを要求する
+
+LOGIN_REDIRECT_URL = 'wooys:index'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'accounts_login'
+ACCOUNT_LOGOUT_ON_GET = True  # ログアウトリンク一発でログアウト
+
+
 # ロガー設定
 LOGGING = {
     'version': 1,
