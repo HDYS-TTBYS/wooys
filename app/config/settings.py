@@ -42,9 +42,13 @@ INSTALLED_APPS = [
     # install
     'storages',
     'django_ses',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.accounts',
 
     # 自作
     'wooys.apps.WooysConfig',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -154,6 +158,9 @@ AWS_SES_ACCESS_KEY_ID = os.environ.get("AWS_SES_ACCESS_KEY_ID")
 AWS_SES_SECRET_ACCESS_KEY = os.environ.get("AWS_SES_SECRET_ACCESS_KEY")
 EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND")
 
+
+# ユーザーモデル
+AUTH_USER_MODEL = "accounts.CustomUser"
 
 # ロガー設定
 LOGGING = {
