@@ -31,6 +31,18 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    # 自作
+    'wooys.apps.WooysConfig',
+    'accounts.apps.AccountsConfig',
+
+    # install
+    'storages',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'django_ses',
+
     # default
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,16 +51,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # install
-    'storages',
-    'django_ses',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.accounts',
-
-    # 自作
-    'wooys.apps.WooysConfig',
-    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -66,7 +68,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),  # テンプレートを置く場所
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -166,18 +170,18 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = (
     # 一般（メールアドレス）
-    'allauth.accounts.auth_backends.AuthenticationBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
     # 管理者（ユーザーネーム）
     'django.contrib.auth.backends.ModelBackend',
 )
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # 認証方法をメールアドレスにする
-ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'  # Userモデルのusername
 ACCOUNT_USERNAME_REQUIRED = True  # ユーザー名を要求する
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # メールを送信する
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = "admin@tatehide0001.work"
 ACCOUNT_EMAIL_REQUIRED = True  # メールアドレスを要求する
 
 LOGIN_REDIRECT_URL = 'wooys:index'
-ACCOUNT_LOGOUT_REDIRECT_URL = 'accounts_login'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'account/login'
 ACCOUNT_LOGOUT_ON_GET = True  # ログアウトリンク一発でログアウト
 
 
