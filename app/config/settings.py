@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+from django.contrib.messages import constants as messages
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -180,10 +182,19 @@ ACCOUNT_USERNAME_REQUIRED = True  # ユーザー名を要求する
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # メールを送信する
 DEFAULT_FROM_EMAIL = SERVER_EMAIL = "admin@tatehide0001.work"
 ACCOUNT_EMAIL_REQUIRED = True  # メールアドレスを要求する
-
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  # サインインメール確認後自動でログイン
 LOGIN_REDIRECT_URL = 'wooys:index'
-ACCOUNT_LOGOUT_REDIRECT_URL = 'account/login'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'wooys:index'
 ACCOUNT_LOGOUT_ON_GET = True  # ログアウトリンク一発でログアウト
+
+
+# メッセージ
+MESSAGE_TAGS = {
+    messages.ERROR: "alert alert-danger",
+    messages.WARNING: "alert alert-warning",
+    messages.SUCCESS: "alert alert-success",
+    messages.INFO: "alert alert-info",
+}
 
 
 # ロガー設定
