@@ -6,61 +6,50 @@
 {% block title %}サインイン{% endblock %}
 
 {% block head %}
-  <style>
-    .signup_form_wrapper {
-      width: 100%;
-      max-width: 400px;
-      padding: 15px;
-      margin: auto;
-    }
-  </style>
+
+<link href="{% static 'form_wrapper.css' %}" rel="stylesheet">
+
 {% endblock head %}
 
 {% block contents %}
 
 
-<div class="text-center">
-  <div class="container">
+<div class="container">
 
-  <div class="signup_form_wrapper">
-    <h1>ユーザー登録</h1>
+    <div class="form_wrapper">
+        <h1>ユーザー登録</h1>
 
-    <p>すでにアカウントをお持ちであれば、こちらから<a href="{{ login_url }}">ログイン</a> してください。</p>
+        <p>すでにアカウントをお持ちであれば、こちらから<a href="{{ login_url }}">ログイン</a> してください。</p>
 
-    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-      {% csrf_token %}
+        <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
 
 
-      {{ form.non_field_errors }}
-      {% for field in form %}
-      <div class="row">
-        <div class="">
-          {{ field.label_tag }}
-        </div>
+            {{ form.non_field_errors }}
+            {% for field in form %}
+            {{ field.label_tag }}
 
-        {{ field|add_class:'form-control' }}
-        {% if field.help_text %}
-        <span class="helptext">{{ field.help_text }}</span>
-        {% endif %}
-        {% if field.errors %}
-        <div class="alert alert-warning">
-          {{ field.errors }}
-        </div>
-        {% else %}
-          {{ field.errors }}
-        {% endif %}
-        
-      </div>
-      {% endfor %}
+            {{ field|add_class:'form-control' }}
+            {% if field.help_text %}
+            <span class="helptext">{{ field.help_text }}</span>
+            {% endif %}
+            {% if field.errors %}
+            <div class="alert alert-warning">
+                {{ field.errors }}
+            </div>
+            {% else %}
+            {{ field.errors }}
+            {% endif %}
 
-      {% if redirect_field_value %}
-      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-      {% endif %}
-      <br>
-      <button class="btn btn-lg btn-primary btn-lg" type="submit">サインアップ &raquo;</button>
-    </form>
-  </div>
-  </div>
+            {% endfor %}
+
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <br>
+            <button class="btn btn-lg btn-primary btn-lg" type="submit">サインアップ &raquo;</button>
+        </form>
+    </div>
 </div>
 
 

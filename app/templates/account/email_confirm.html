@@ -1,14 +1,18 @@
 {% extends "account/base.html" %}
 
 {% load account %}
+{% load static %}
 
 {% block title %}Confirm sign up{% endblock %}
 
+{% block head %}
+<link href="{% static 'form_wrapper.css' %}" rel="stylesheet">
+{% endblock head %}
 
 {% block contents %}
 
 <div class="container">
-    <div class="row">
+     <div class="form_wrapper">
         <h1>ユーザー登録</h1>
 
         {% if confirmation %}
