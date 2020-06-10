@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'django_ses',
     'widget_tweaks',
+    'imagekit',
 
     # default
     'django.contrib.admin',
