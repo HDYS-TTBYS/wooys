@@ -8,12 +8,18 @@ import os
 import uuid
 
 from django.views import generic
+from django.urls import reverse_lazy
+from django.contrib import messages
 from django.http import HttpResponse
 from django.http.response import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import UploadImageByFile
+
+from .models import UploadImageByFile, Article
+from .forms import ArticleCreateForm
+
 from django.conf import settings
 
 # Create your views here.
@@ -99,3 +105,20 @@ def UploadByUrl(request):
             }
         }
         return JsonResponse(response)
+
+
+class ArticleCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Article
+    template_name = "wooys/create.html"
+    form_class = ArticleCreateForm
+    success_url = reverse_lazy("wooys:index")
+
+    def form_valid(self, form):
+        diary = form.save(commit=False)
+        diary.user = self.request.user
+        diary.save()
+        messages.success(self.request, "記事を作成しました。")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "記事の作成に失敗しました。")

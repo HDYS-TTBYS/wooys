@@ -3,166 +3,62 @@
 
 {% block title %}記事作成{% endblock title %}
 
+{% block head %}
+
+<link href="{% static 'create.css' %}" rel="stylesheet">
+
+{% endblock head %}
+
 {% block contents %}
 
 <div class="container">
-    <div id="editor"></div>
+
+    <form class="create" name="create" id="create" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        <div id="editor"></div>
+
+    </form>
+
+    <button class="btn btn-lg btn-primary" onclick="OnButtonClick();">作成</button>
+
+
 </div>
 
 <!-- <p>//テキストエディタを表示する</p> -->
 
-
-<p>//必要なプラグインを読み込む</p>
+{% comment %} <p>//必要なプラグインを読み込む</p> {% endcomment %}
 
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
-<p>//ヘッダー要素</p>
+{% comment %} <p>//ヘッダー要素</p> {% endcomment %}
 
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
-<p>//リスト要素</p>
+{% comment %} <p>//リスト要素</p> {% endcomment %}
 
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script>
-<p>//チェックリスト要素</p>
+{% comment %} <p>//チェックリスト要素</p> {% endcomment %}
 
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
-<p>//引用要素</p>
+{% comment %} <p>//引用要素</p> {% endcomment %}
 
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script>
-<p>//コード要素</p>
+{% comment %} <p>//コード要素</p> {% endcomment %}
 
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script>
-<p>//テーブル要素</p>
+{% comment %} <p>//テーブル要素</p> {% endcomment %}
 
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.3.0"></script>
-<p>画像</p>
+{% comment %} <p>画像</p> {% endcomment %}
 
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script>
-<p>マーカー</p>
+{% comment %} <p>マーカー</p> {% endcomment %}
 
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script>
-<p>埋め込み</p>
-
-<button id="save">保存</button>
-<button id="lock">ロック</button>
+{% comment %} <p>埋め込み</p> {% endcomment %}
 
 
-<p>//Editor.jsの本体ライブラリを読み込む</p>
+{% comment %} <p>//Editor.jsの本体ライブラリを読み込む</p> {% endcomment %}
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
-<script>
-    // どこかで定義したdata変数
-    // JSON形式で保存していたのでparseする
-    const savedData = this.data ? JSON.parse(this.data) : null
 
-    //インスタンスの作成
-    const editor = new EditorJS({
-        holder: 'editor',
-        //プラグインの設定
-        tools: {
-            header: Header,
-            list: List,
-            checklist: Checklist,
-            quote: Quote,
-            code: CodeTool,
-            table: Table,
-            image: {
-                class: ImageTool,
-                config: {
-                    endpoints: {
-                        byFile: '/uploadByFile/', // Your backend file uploader endpoint
-                        byUrl: '/uploadByUrl/', // Your endpoint that provides uploading by Url
-                    }
-                }
-            },
-            embed: {
-                class: Embed,
-                config: {
-                    services: {
-                        youtube: true,
-                    }
-                }
-            },
-            Marker: {
-                class: Marker,
-                shortcut: 'CMD+SHIFT+M',
-            },
-
-        },
-        //data: savedData, // dataプロパティーに既存データを突っ込む!!
-        data: {
-            "time": 1589205247193,
-            "blocks": [{
-                    "type": "header",
-                    "data": {
-                        "text": "Editor.js",
-                        "level": 2
-                    }
-                },
-                {
-                    "type": "paragraph",
-                    "data": {
-                        "text": "Hey. Meet the new Editor. On this page you can see it in action — try to edit this text."
-                    }
-                },
-                {
-                    "type": "header",
-                    "data": {
-                        "text": "Key features",
-                        "level": 3
-                    }
-                },
-                {
-                    "type": "list",
-                    "data": {
-                        "style": "unordered",
-                        "items": [
-                            "It is a block-styled editor",
-                            "It returns clean data output in JSON",
-                            "Designed to be extendable and pluggable with a simple API"
-                        ]
-                    }
-                },
-                {
-                    "type": "header",
-                    "data": {
-                        "text": "What does it mean «block-styled editor»",
-                        "level": 3
-                    }
-                },
-                {
-                    "type": "paragraph",
-                    "data": {
-                        "text": "Classic WYSIWYG-editors produce raw HTML-markup with both content data and contentappearance.On the contrary,Editor.js outputs JSON object with data of each Block.You can see anexample below "
-                    }
-                },
-                {
-                    "type": "paragraph",
-                    "data": {
-                        "text": "Clean data is useful to sanitize, validate and process on the backend."
-                    }
-                },
-            ],
-            "version": "2.17.0"
-        }
-    });
-    const save = document.getElementById('save');
-    save.addEventListener('click', () => {
-        editor.save()
-            .then((savedData) => {
-                console.log(savedData);
-            }).catch((error) => {
-                console.log(error)
-            });
-    });
-
-    const lock = document.getElementById('lock');
-    lock.addEventListener('click', () => {
-        tags = document.getElementsByTagName("*")
-        console.log(tags)
-        for (var i = 0; i < tags.length; i++) {
-            tags[i].contentEditable = false;
-        }
-
-        console.log("run!")
-    });
-</script>
+<script src="{% static 'create.js' %}"></script>
 
 {% endblock contents %}
