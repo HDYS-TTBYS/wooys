@@ -33,7 +33,7 @@
         {% comment %} 前ページへのリンク {% endcomment %}
         {% if page_obj.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
@@ -46,20 +46,23 @@
         </li>
         {% else %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+            <a class="page-link" href="?page={{ page_num }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ page_num }}</a>
         </li>
         {% endif %}
         {% endfor %}
         {% comment %} 次ページへのリンク {% endcomment %}
         {% if page_obj.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number}}">
+            <a class="page-link" href="?page={{ page_obj.next_page_number}}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
         {% endif %}
     </ul>
     {% endif %}
+
+
+
 
 </main>
 {% endblock contents %}

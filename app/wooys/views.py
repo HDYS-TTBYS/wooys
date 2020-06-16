@@ -28,7 +28,7 @@ class IndexView(generic.ListView):
     """トップページ"""
     model = Article
     template_name = "wooys/index.html"
-    paginate_by = 10
+    paginate_by = 3
 
     def get_queryset(self):
         q_word = self.request.GET.get('query')
