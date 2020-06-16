@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}記事詳細{% endblock title %}
+
+{% block head %}
+
+<link href="{% static 'create.css' %}" rel="stylesheet">
+
+{% endblock head %}
+
+{% block contents %}
+
+<div class="container">
+
+    <a href="">
+        <div class="media text-muted pt-3">
+            <img class="bd-placeholder-img mr-2 rounded" width="32" height="32"
+                src="http://placehold.jp/32x32.png?text=なし" height="32" width="32" alt="サンプル画像" align="top">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <strong class="d-block text-gray-dark">{{ object.user }}</strong>
+                {{ object.created_at }}に作成 | {{ object.updated_at }}に更新<br>検索タグ:{{ object.search_tag}} | いいね:
+            </p>
+        </div>
+    </a>
+    <h1>{{ object.title }}</h1>
+
+    <div id="id_content" style="visibility: hidden;">{{ object.content }}</div>
+
+    <div id="editor"></div>
+
+    
+
+    <form class="comment" name="comment" id="comment" method="POST" enctype="multipart/form-data">{% csrf_token %}
+
+    <div id="editor"></div>
+
+
+        <button class="btn btn-lg btn-primary" onclick="OnButtonClick();">コメント</button>
+    </form>
+
+
+
+</div>
+
+<!-- <p>//テキストエディタを表示する</p> -->
+
+{% comment %} <p>//必要なプラグインを読み込む</p> {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+{% comment %} <p>//ヘッダー要素</p> {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+{% comment %} <p>//リスト要素</p> {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script>
+{% comment %} <p>//チェックリスト要素</p> {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+{% comment %} <p>//引用要素</p> {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script>
+{% comment %} <p>//コード要素</p> {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script>
+{% comment %} <p>//テーブル要素</p> {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.3.0"></script>
+{% comment %} <p>画像</p> {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script>
+{% comment %} <p>マーカー</p> {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script>
+{% comment %} <p>埋め込み</p> {% endcomment %}
+
+
+{% comment %} <p>//Editor.jsの本体ライブラリを読み込む</p> {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+
+<script src="{% static 'detail.js' %}"></script>
+
+
+
+{% endblock contents %}
