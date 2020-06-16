@@ -26,6 +26,7 @@
 
     <form class="create" name="create" id="create" method="POST" enctype="multipart/form-data">{% csrf_token %}
         {{ form.as_p }}
+
         <div id="quill-editor"></div>
 
         <br>
@@ -40,16 +41,15 @@
             console.log(data);
             document.getElementById("id_content").value = JSON.stringify(data)
         })
+        quill.on('text-change', function(delta, oldDelta, source) {
+            data = quill.getContents()
+            console.log(data);
+            document.getElementById("id_content").value = JSON.stringify(data)
+        });
         
     </script>
 
-
-
 </div>
-
-
-
-
 
 
 {% endblock contents %}

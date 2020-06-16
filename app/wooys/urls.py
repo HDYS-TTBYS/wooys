@@ -9,6 +9,5 @@ urlpatterns = [
     path("detail/<int:pk>/",
          views.ArticleDetailView.as_view(), name="detail"),
     path("uploadByFile/", views.UploadByFile, name="uploadByFile"),
-    path("uploadByUrl/", views.UploadByUrl, name="uploadByUrl"),
 
 ]
