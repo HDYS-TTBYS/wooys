@@ -1,11 +1,5 @@
 import json
-import urllib.error
-import urllib.request
 import logging
-import requests
-import io
-import os
-import uuid
 
 from django.views import generic
 from django.urls import reverse_lazy
@@ -72,6 +66,24 @@ class ArticleDetailView(generic.DetailView):
     """記事詳細ページ"""
     model = Article
     template_name = "wooys/detail.html"
+
+
+class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
+    """記事アップデートページ"""
+    model = Article
+    template_name = "wooys/update.html"
+    form_class = ArticleCreateForm
+
+    def get_success_url(self):
+        return reverse_lazy("wooys:index")
+
+    def form_valid(self, form):
+        messages.success(self.request, "記事を更新しました。")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "記事の更新に失敗しました。")
+        return super().form_invalid(form)
 
 
 @require_POST

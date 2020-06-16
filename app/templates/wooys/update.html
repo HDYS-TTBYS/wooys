@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}記事作成{% endblock title %}
+{% block title %}記事更新{% endblock title %}
 
 {% block head %}
 
@@ -16,7 +16,7 @@
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
 <link href="https://cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet" />
 <!-- Quillカスタマイズjs -->
-<script type="text/javascript" src="{% static 'create.js' %}"></script>
+<script type="text/javascript" src="{% static 'update.js' %}"></script>
 
 {% endblock head %}
 
@@ -24,18 +24,19 @@
 
 <div class="container">
 
-    <form class="create" name="create" id="create" method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <form class="update_form" name="update_form" id="update_form" method="POST" enctype="multipart/form-data">{% csrf_token %}
         {{ form.as_p }}
 
         <div id="quill-editor"></div>
 
         <br>
 
-        <button class="btn btn-lg btn-primary" id="submit">作成</button>
+        <button class="btn btn-lg btn-primary" id="submit">更新</button>
     </form>
 
     <script>
-        var quill = QuillEditorMake("quill-editor");
+        var data = document.update_form.content.value;
+        var quill = QuillUpdateEditorMake("quill-editor", data);
         document.getElementById("submit").addEventListener("click", () => {
             data = quill.getContents()
             console.log(data);
