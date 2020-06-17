@@ -86,10 +86,21 @@ class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
         return super().form_invalid(form)
 
 
+class ArticleDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """記事削除ページ"""
+    model = Article
+    template_name = "wooys/delete.html"
+    success_url = reverse_lazy("wooys:index")
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "記事を削除しました。")
+        return super().delete(request, *args, **kwargs)
+
+
 @require_POST
 @csrf_exempt
 def UploadByFile(request):
-    """/UploadByFile で呼び出される。"""
+    """/UploadByFile で呼び出される。 quillの画像アップロードAPI"""
     # アップロードされたファイルを保存する。
     file = request.FILES['image']
     photo = UploadImageByFile(img=file)

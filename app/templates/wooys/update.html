@@ -39,12 +39,10 @@
         var quill = QuillUpdateEditorMake("quill-editor", data);
         document.getElementById("submit").addEventListener("click", () => {
             data = quill.getContents()
-            console.log(data);
             document.getElementById("id_content").value = JSON.stringify(data)
         })
         quill.on('text-change', function(delta, oldDelta, source) {
             data = quill.getContents()
-            console.log(data);
             document.getElementById("id_content").value = JSON.stringify(data)
         });
         document.getElementById("id_content").style.display = "none";

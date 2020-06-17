@@ -12,9 +12,16 @@
     <link rel="icon" href="{% static 'img/favicon.ico' %}">
     <title>{% block title %}{% endblock title %}</title>
 
+    {% comment %} pace.js {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/black/pace-theme-loading-bar.min.css">
+
+    <link rel="stylesheet" href="{% static 'pace.css' %}">
 
     <!-- Bootstrap core CSS -->
     <link href="{% static '/bootstrap-4.5.0-examples/assets/dist/css/bootstrap.css' %}" rel="stylesheet">
+
 
     <style>
         .bd-placeholder-img {
@@ -67,8 +74,11 @@
         </div>
         {% endif %}
 
+        <div id="wrap">
 
-        {% block contents %}{% endblock contents %}
+            {% block contents %}{% endblock contents %}
+
+        </div>
 
         {% comment %} buttom navbar {% endcomment %}
         <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
@@ -79,15 +89,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{% url 'wooys:index' %}">ホーム <span
-                                class="sr-only">(current)</span></a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href={% url "wooys:create" %}>記事作成</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                     </li>
                     <li class="nav-item dropup">
                         {% if user.is_authenticated %}
@@ -108,7 +112,7 @@
 
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">        
+                <form class="form-inline my-2 my-lg-0">
                     <select class="form-control" id="sort-button" name="sort">
                         <option value="new">新着順</option>
                         <option value="day">日間いいね数</option>
@@ -116,7 +120,8 @@
                         <option value="month">月間いいね数</option>
                         <option value="year">年間いいね数</option>
                     </select>
-                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="query" value="{{ request.GET.query }}">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"
+                        name="query" value="{{ request.GET.query }}">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">検索</button>
                 </form>
             </div>
