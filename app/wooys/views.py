@@ -5,6 +5,7 @@ from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.http.response import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -78,8 +79,15 @@ class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
         return reverse_lazy("wooys:index")
 
     def form_valid(self, form):
-        messages.success(self.request, "記事を更新しました。")
-        return super().form_valid(form)
+        request_user = self.request.user
+        article = Article.objects.filter(pk=self.kwargs['pk'])
+        is_update = article.user = request_user
+        if is_update:
+            messages.success(self.request, "記事を更新しました。")
+            return super().form_valid(form)
+        else:
+            messages.warning(self.request, "記事を更新する権限がありません。")
+            return redirect("wooys:index")
 
     def form_invalid(self, form):
         messages.error(self.request, "記事の更新に失敗しました。")
@@ -93,8 +101,37 @@ class ArticleDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("wooys:index")
 
     def delete(self, request, *args, **kwargs):
-        messages.success(self.request, "記事を削除しました。")
-        return super().delete(request, *args, **kwargs)
+        request_user = self.request.user
+        is_delete = Article.objects.filter(user=request_user)
+        if is_delete:
+            messages.success(self.request, "記事を削除しました。")
+            return super().delete(request, *args, **kwargs)
+        else:
+            messages.warning(self.request, "記事を削除する権限がありません。")
+            return redirect("wooys:index")
+
+
+class MyPageView(LoginRequiredMixin, generic.ListView):
+    """マイページ"""
+    model = Article
+    template_name = "wooys/mypage.html"
+    paginate_by = 3
+
+    def get_queryset(self):
+        request_user = self.request.user
+        q_word = self.request.GET.get('query')
+        s_word = self.request.GET.get('sort')
+        if q_word is not None:
+            q_word.split()
+        if q_word:
+            # リクエストしたユーザーが作成した記事を取得
+            articles = Article.objects.filter(
+                user=request_user).filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word))
+        else:
+            articles = Article.objects.filter(
+                user=request_user).order_by("-created_at")
+        return articles
 
 
 @require_POST
