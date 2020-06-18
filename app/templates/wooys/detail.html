@@ -26,11 +26,15 @@
 
     <a href="">
         <div class="media text-muted pt-3">
-            <img class="bd-placeholder-img mr-2 rounded" width="32" height="32"
-                src="http://placehold.jp/32x32.png?text=なし" height="32" width="32" alt="サンプル画像" align="top">
+            <div class="logo">
+                <img class="bd-placeholder-img mr-2 rounded" width="32" height="32"
+                    src="http://placehold.jp/32x32.png?text=なし" height="32" width="32" alt="サンプル画像" align="top">
+                {{ article.user }}
+            </div>
             <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                <strong class="d-block text-gray-dark">{{ object.user }}</strong>
-                {{ object.created_at }}に作成 | {{ object.updated_at }}に更新<br>検索タグ:{{ object.search_tag}} | いいね:
+                <strong class="d-block text-gray-dark">{{ article.title }} </strong>
+                <br>
+                {{ article.created_at }}に作成 {{ article.updated_at }}に更新 いいね
             </p>
         </div>
     </a>

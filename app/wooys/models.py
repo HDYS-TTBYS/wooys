@@ -32,3 +32,12 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class GoodLike(models.Model):
+    """いいねモデル"""
+    user = models.ForeignKey(
+        CustomUser, verbose_name="ユーザー", on_delete=models.CASCADE)
+    article = models.ForeignKey(
+        Article, verbose_name="記事", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(verbose_name="作成日時", auto_now_add=True)

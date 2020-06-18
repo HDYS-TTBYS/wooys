@@ -12,11 +12,15 @@
         {% for article in article_list %}
         <a href="{% url 'wooys:update' article.pk %}">
             <div class="media text-muted pt-3">
-                <img class="bd-placeholder-img mr-2 rounded" width="32" height="32"
-                    src="http://placehold.jp/32x32.png?text=なし" height="32" width="32" alt="サンプル画像" align="top">
+                <div class="logo">
+                    <img class="bd-placeholder-img mr-2 rounded" width="32" height="32"
+                        src="http://placehold.jp/32x32.png?text=なし" height="32" width="32" alt="サンプル画像" align="top">
+                    {{ article.user }}
+                </div>
                 <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                    <strong class="d-block text-gray-dark">{{ article.user }}</strong>
-                    {{ article.title }}
+                    <strong class="d-block text-gray-dark">{{ article.title }} </strong>
+                    <br>
+                    {{ article.created_at }}に作成 {{ article.updated_at }}に更新 いいね
                 </p>
             </div>
         </a>
@@ -33,7 +37,8 @@
         {% comment %} 前ページへのリンク {% endcomment %}
         {% if page_obj.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+            <a class="page-link"
+                href="?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
@@ -46,14 +51,16 @@
         </li>
         {% else %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_num }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ page_num }}</a>
+            <a class="page-link"
+                href="?page={{ page_num }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ page_num }}</a>
         </li>
         {% endif %}
         {% endfor %}
         {% comment %} 次ページへのリンク {% endcomment %}
         {% if page_obj.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number}}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+            <a class="page-link"
+                href="?page={{ page_obj.next_page_number}}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>

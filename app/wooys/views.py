@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 
 
-from .models import UploadImageByFile, Article
+from .models import UploadImageByFile, Article, GoodLike
 from .forms import ArticleCreateForm
 
 from django.conf import settings
@@ -150,14 +150,50 @@ def UploadByFile(request):
             "data": download_url
         }
         json_response = JsonResponse(response)
-        json_response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:5500'
         # URLをjsonとして返す。
         return json_response
     except ValueError:
         response = {
-            "success": 0,
-            "file": {
-                "url": ""
-            }
+            "data": ""
         }
-        return ValueError
+        json_response = JsonResponse(response)
+        # URLをjsonとして返す。
+        return json_response
+
+
+@csrf_exempt
+def Good(request, *args, **kwargs):
+    """いいね機能
+    POST
+    {
+        user_id: "",
+        article_id: "",
+    }
+    """
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        if body.user_id:
+            is_good = Good.objects.filter(
+                user_id=body.user_id).filter(article_id=body.article_id)
+            if is_good.count():
+                is_good.delete()
+                messages.warning(request, 'いいねを取り消しました')
+            else:
+                good = Good()
+                good.user = body.user_id
+                good.article = body.article_id
+                good.save()
+                messages.success(request, 'いいね！しました')
+        else:
+            messages.warning(request, 'ログインしてください')
+
+    if request.method == 'GET':
+        # JSON文字列
+        article_id = request.GET.get('article_id')
+        good_num = GoodLike.objects.filter(article_id=article_id).count()
+        response = {
+            "good_num": good_num
+        }
+        json_response = JsonResponse(response)
+        # URLをjsonとして返す。
+        return json_response
