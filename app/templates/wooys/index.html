@@ -4,9 +4,7 @@
 {% block title %}トップページ{% endblock title %}
 
 {% block head %}
-
 <script src="{% static 'get_good_num.js' %}"></script>
-
 {% endblock head %}
 
 {% block contents %}
@@ -29,7 +27,7 @@
                     {{ article.created_at }}に作成 {{ article.updated_at }}に更新
                     いいね:<span id="good_num_{{ article.pk }}"></span>
                     <script type="text/javascript">
-                        getGood_num({{ article.pk }});
+                        getGoodNum({{ article.pk }},{{ user.id|default_if_none:"" }})
                     </script>
                 </p>
             </div>

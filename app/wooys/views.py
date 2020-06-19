@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 
-
+from accounts.models import CustomUser
 from .models import UploadImageByFile, Article, GoodLike
 from .forms import ArticleCreateForm
 
@@ -172,28 +172,47 @@ def Good(request, *args, **kwargs):
     """
     if request.method == 'POST':
         body = json.loads(request.body)
-        if body.user_id:
-            is_good = Good.objects.filter(
-                user_id=body.user_id).filter(article_id=body.article_id)
+        user_id = body["user_id"]
+        article_id = body["article_id"]
+        is_user = CustomUser.objects.filter(
+            pk=user_id)
+        is_article = Article.objects.filter(
+            pk=article_id
+        )
+        # userの存在確認
+        if is_user.count():
+            # いいね済か？
+            is_good = GoodLike.objects.filter(
+                user_id=user_id).filter(article_id=article_id)
             if is_good.count():
                 is_good.delete()
-                messages.warning(request, 'いいねを取り消しました')
+                response = {"response": "deleted"}
+                return JsonResponse(response)
             else:
-                good = Good()
-                good.user = body.user_id
-                good.article = body.article_id
+                good = GoodLike()
+                good.user = CustomUser.objects.get(
+                    pk=user_id)
+                good.article = Article.objects.get(
+                    pk=article_id)
                 good.save()
-                messages.success(request, 'いいね！しました')
+                response = {"response": "created"}
+                return JsonResponse(response)
         else:
-            messages.warning(request, 'ログインしてください')
+            response = {"response": "no_user"}
+            return JsonResponse(response)
 
     if request.method == 'GET':
-        # JSON文字列
         article_id = request.GET.get('article_id')
+        user_id = request.GET.get('user_id')
+        if user_id != "undefined":
+            is_good = GoodLike.objects.filter(
+                user_id=user_id).filter(article_id=article_id).count()
+        else:
+            is_good = 0
         good_num = GoodLike.objects.filter(article_id=article_id).count()
         response = {
-            "good_num": good_num
+            "user_id": user_id,
+            "is_good": is_good,
+            "good_num": good_num,
         }
-        json_response = JsonResponse(response)
-        # URLをjsonとして返す。
-        return json_response
+        return JsonResponse(response)

@@ -3,6 +3,10 @@
 
 {% block title %}マイページ{% endblock title %}
 
+{% block head %}
+<script src="{% static 'get_good_num.js' %}"></script>
+{% endblock head %}
+
 {% block contents %}
 <main role="main" class="container">
 
@@ -20,7 +24,11 @@
                 <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                     <strong class="d-block text-gray-dark">{{ article.title }} </strong>
                     <br>
-                    {{ article.created_at }}に作成 {{ article.updated_at }}に更新 いいね
+                    {{ article.created_at }}に作成 {{ article.updated_at }}に更新
+                    いいね:<span id="good_num_{{ article.pk }}"></span>
+                    <script type="text/javascript">
+                        getGoodNum({{ article.pk }},{{ user.id|default_if_none:"" }});
+                    </script>
                 </p>
             </div>
         </a>
