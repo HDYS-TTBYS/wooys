@@ -26,6 +26,8 @@
     <!-- Custom styles for this template -->
     <link href="{% static '/bootstrap-4.5.0-examples/offcanvas/offcanvas.css' %}" rel="stylesheet">
 
+    <script src="{% static 'form_select.js' %}"></script>
+
     {% block head %}{% endblock head %}
 </head>
 
@@ -87,20 +89,25 @@
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
                     <select class="form-control" id="sort-button" name="sort">
-                        <option value="new">新着順</option>
-                        <option value="week-iine">週間いいね数</option>
-                        <option value="year-iine">年間いいね数</option>
-                        <option value="week-sea">週間閲覧数</option>
-                        <option value="year-sea">年間閲覧数</option>
+                    <option value="new" id="new">新着順</option>
+                    <option value="weekLike" id="weekLike">週間いいね数</option>
+                    <option value="like" id="like">総合いいね数</option>
+                    <option value="weekBrowse" id="weekBrowse">週間閲覧数</option>
+                    <option value="browse" id="browse">総合閲覧数</option>
                     </select>
+                    {% if request.GET.sort  %}
+                    <script type="text/javascript">
+                        selectFormValue({{ request.GET.sort }})
+                    </script>
+                    {% endif %}
                     <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"
                         name="query" value="{{ request.GET.query }}">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">検索</button>
                 </form>
+                
             </div>
         </nav>
         {% comment %} buttom navbar {% endcomment %}
-
 
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

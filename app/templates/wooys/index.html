@@ -29,6 +29,8 @@
                     <script type="text/javascript">
                         getGoodNum({{ article.pk }},{{ user.id|default_if_none:"" }})
                     </script>
+                    閲覧数:{{ article.get_browse_num }}
+
                 </p>
             </div>
         </a>

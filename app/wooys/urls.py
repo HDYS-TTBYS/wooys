@@ -12,7 +12,7 @@ urlpatterns = [
          views.ArticleUpdateView.as_view(), name="update"),
     path("delete/<int:pk>/",
          views.ArticleDeleteView.as_view(), name="delete"),
-    path("good/", views.Good, name="good"),
+    path("good/", views.Goodfunc, name="good"),
     path("mypage/", views.MyPageView.as_view(), name="mypage"),
     path("uploadByFile/", views.UploadByFile, name="uploadByFile"),
 

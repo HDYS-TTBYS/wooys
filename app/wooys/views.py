@@ -1,5 +1,7 @@
 import json
 import logging
+import datetime
+
 
 from django.views import generic
 from django.urls import reverse_lazy
@@ -10,10 +12,11 @@ from django.http.response import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.db.models import Q, Count
+from django.utils import timezone
 
 from accounts.models import CustomUser
-from .models import UploadImageByFile, Article, GoodLike
+from .models import UploadImageByFile, Article, Like, Browsing
 from .forms import ArticleCreateForm
 
 from django.conf import settings
@@ -36,12 +39,53 @@ class IndexView(generic.ListView):
         if q_word is not None:
             q_word.split()
         s_word = self.request.GET.get('sort')
-
         if q_word:
-            articles = Article.objects.filter(
-                Q(title__in=q_word) | Q(search_tag__in=q_word))
+            # 検索文字列あり
+            if s_word == "like":
+                # 総合いいね順
+                articles = Article.objects.filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_like=Count('like')).order_by('-num_like')
+            elif s_word == "weekLike":
+                # 週間いいね順
+                seven_days_ago = timezone.now() - datetime.timedelta(days=7)
+                articles = Article.objects.filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_like=Count('like', filter=Q(
+                        like__created_at__gte=seven_days_ago))).order_by('-num_like')
+            elif s_word == "browse":
+                # 総合閲覧数順
+                articles = Article.objects.filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_browse=Count('browsing')).order_by('-num_browse')
+            elif s_word == "weekBrowse":
+                # 週間閲覧数順
+                seven_days_ago = timezone.now() - datetime.timedelta(days=7)
+                articles = Article.objects.filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_browse=Count('browsing', filter=Q(
+                        like__created_at__gte=seven_days_ago))).order_by('-num_browse')
+            else:
+                articles = Article.objects.filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).order_by("-created_at")
         else:
-            articles = Article.objects.all().order_by("-created_at")
+            # 検索文字列なし
+            if s_word == "like":
+                # 総合いいね数
+                articles = Article.objects.annotate(
+                    num_like=Count('like')).order_by('-num_like')
+            elif s_word == "weekLike":
+                # 週間いいね数
+                seven_days_ago = timezone.now() - datetime.timedelta(days=7)
+                articles = Article.objects.annotate(num_like=Count('like', filter=Q(
+                    like__created_at__gte=seven_days_ago))).order_by('-num_like')
+            elif s_word == "browse":
+                # 総合閲覧数
+                articles = Article.objects.annotate(
+                    num_browse=Count('browsing')).order_by('-num_browse')
+            elif s_word == "weekBrowse":
+                # 週間閲覧数
+                seven_days_ago = timezone.now() - datetime.timedelta(days=7)
+                articles = Article.objects.annotate(num_browse=Count('browsing', filter=Q(
+                    like__created_at__gte=seven_days_ago))).order_by('-num_browse')
+            else:
+                articles = Article.objects.all().order_by("-created_at")
         return articles
 
 
@@ -68,6 +112,14 @@ class ArticleDetailView(generic.DetailView):
     model = Article
     template_name = "wooys/detail.html"
 
+    def get_context_data(self, **kwargs):
+        """閲覧履歴を記録"""
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs['pk']
+        article = Article.objects.get(pk=pk)
+        article.browsing_set.create()
+        return context
+
 
 class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
     """記事アップデートページ"""
@@ -76,7 +128,7 @@ class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = ArticleCreateForm
 
     def get_success_url(self):
-        return reverse_lazy("wooys:index")
+        return reverse_lazy("wooys:update")
 
     def form_valid(self, form):
         request_user = self.request.user
@@ -118,24 +170,63 @@ class MyPageView(LoginRequiredMixin, generic.ListView):
     paginate_by = 3
 
     def get_queryset(self):
-        request_user = self.request.user
         q_word = self.request.GET.get('query')
-        s_word = self.request.GET.get('sort')
         if q_word is not None:
             q_word.split()
+        s_word = self.request.GET.get('sort')
         if q_word:
-            # リクエストしたユーザーが作成した記事を取得
-            articles = Article.objects.filter(
-                user=request_user).filter(
-                    Q(title__in=q_word) | Q(search_tag__in=q_word))
+            # 検索文字列あり
+            if s_word == "like":
+                # 総合いいね順
+                articles = Article.objects.filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_like=Count('like')).order_by('-num_like')
+            elif s_word == "weekLike":
+                # 週間いいね順
+                seven_days_ago = timezone.now() - datetime.timedelta(days=7)
+                articles = Article.objects.filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_like=Count('like', filter=Q(
+                        like__created_at__gte=seven_days_ago))).order_by('-num_like')
+            elif s_word == "browse":
+                # 総合閲覧数順
+                articles = Article.objects.filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_browse=Count('browsing')).order_by('-num_browse')
+            elif s_word == "weekBrowse":
+                # 週間閲覧数順
+                seven_days_ago = timezone.now() - datetime.timedelta(days=7)
+                articles = Article.objects.filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_browse=Count('browsing', filter=Q(
+                        like__created_at__gte=seven_days_ago))).order_by('-num_browse')
+            else:
+                articles = Article.objects.filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).order_by("-created_at")
         else:
-            articles = Article.objects.filter(
-                user=request_user).order_by("-created_at")
+            # 検索文字列なし
+            if s_word == "like":
+                # 総合いいね数
+                articles = Article.objects.annotate(
+                    num_like=Count('like')).order_by('-num_like')
+            elif s_word == "weekLike":
+                # 週間いいね数
+                seven_days_ago = timezone.now() - datetime.timedelta(days=7)
+                articles = Article.objects.annotate(num_like=Count('like', filter=Q(
+                    like__created_at__gte=seven_days_ago))).order_by('-num_like')
+            elif s_word == "browse":
+                # 総合閲覧数
+                articles = Article.objects.annotate(
+                    num_browse=Count('browsing')).order_by('-num_browse')
+            elif s_word == "weekBrowse":
+                # 週間閲覧数
+                seven_days_ago = timezone.now() - datetime.timedelta(days=7)
+                articles = Article.objects.annotate(num_browse=Count('browsing', filter=Q(
+                    like__created_at__gte=seven_days_ago))).order_by('-num_browse')
+            else:
+                articles = Article.objects.all().order_by("-created_at")
         return articles
 
 
-@require_POST
-@csrf_exempt
+
+@ require_POST
+@ csrf_exempt
 def UploadByFile(request):
     """/UploadByFile で呼び出される。 quillの画像アップロードAPI"""
     # アップロードされたファイルを保存する。
@@ -161,8 +252,8 @@ def UploadByFile(request):
         return json_response
 
 
-@csrf_exempt
-def Good(request, *args, **kwargs):
+@ csrf_exempt
+def Goodfunc(request, *args, **kwargs):
     """いいね機能
     POST
     {
@@ -176,25 +267,18 @@ def Good(request, *args, **kwargs):
         article_id = body["article_id"]
         is_user = CustomUser.objects.filter(
             pk=user_id)
-        is_article = Article.objects.filter(
-            pk=article_id
-        )
         # userの存在確認
         if is_user.count():
             # いいね済か？
-            is_good = GoodLike.objects.filter(
+            is_like = Like.objects.filter(
                 user_id=user_id).filter(article_id=article_id)
-            if is_good.count():
-                is_good.delete()
+            if is_like.count():
+                is_like.delete()
                 response = {"response": "deleted"}
                 return JsonResponse(response)
             else:
-                good = GoodLike()
-                good.user = CustomUser.objects.get(
-                    pk=user_id)
-                good.article = Article.objects.get(
-                    pk=article_id)
-                good.save()
+                article = Article.objects.get(pk=article_id)
+                article.like_set.create(user_id=user_id)
                 response = {"response": "created"}
                 return JsonResponse(response)
         else:
@@ -205,11 +289,11 @@ def Good(request, *args, **kwargs):
         article_id = request.GET.get('article_id')
         user_id = request.GET.get('user_id')
         if user_id != "undefined":
-            is_good = GoodLike.objects.filter(
+            is_good = Like.objects.filter(
                 user_id=user_id).filter(article_id=article_id).count()
         else:
             is_good = 0
-        good_num = GoodLike.objects.filter(article_id=article_id).count()
+        good_num = Like.objects.filter(article_id=article_id).count()
         response = {
             "user_id": user_id,
             "is_good": is_good,
