@@ -319,3 +319,28 @@ class ThumbnailCreateView(LoginRequiredMixin, generic.CreateView):
 
     def form_invalid(self, form):
         messages.error(self.request, "サムネイルの登録に失敗しました。")
+
+
+class ThumbnailUpdateView(LoginRequiredMixin, generic.UpdateView):
+    """サムネイル更新ページ"""
+    model = UserIncluded
+    template_name = "wooys/thumbnail.html"
+    form_class = UserIncludedCreateForm
+
+    def get_success_url(self):
+        return reverse_lazy("wooys:mypage")
+
+    def form_valid(self, form):
+        request_user = self.request.user
+        user_included = UserIncluded.objects.filter(pk=self.kwargs['pk'])
+        is_update = user_included.user = request_user
+        if is_update:
+            messages.success(self.request, "サムネイルを更新しました。")
+            return super().form_valid(form)
+        else:
+            messages.warning(self.request, "サムネイルを更新する権限がありません。")
+            return redirect("wooys:index")
+
+    def form_invalid(self, form):
+        messages.error(self.request, "サムネイルの更新に失敗しました。")
+        return super().form_invalid(form)

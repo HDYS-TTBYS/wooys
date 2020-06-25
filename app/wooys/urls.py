@@ -15,6 +15,9 @@ urlpatterns = [
     path("good/", views.Goodfunc, name="good"),
     path("mypage/", views.MyPageView.as_view(), name="mypage"),
     path("uploadByFile/", views.UploadByFile, name="uploadByFile"),
-    path("thumbnail/", views.ThumbnailCreateView.as_view(), name="thumbnail"),
+    path("create-thumbnail/", views.ThumbnailCreateView.as_view(),
+         name="cretae_thumbnail"),
+    path("update-thumbnail/<int:pk>/", views.ThumbnailUpdateView.as_view(),
+         name="update_thumbnail"),
 
 ]

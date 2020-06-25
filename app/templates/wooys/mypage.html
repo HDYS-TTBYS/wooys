@@ -11,14 +11,15 @@
 {% block contents %}
 <main role="main" class="container">
 
-    <a href="{% url 'wooys:thumbnail' %}" class="btn btn-primary">サムネイル画像選択</a>
 
     {% if "{{ user.userincluded.img.url }}" %}
     <img class="bd-placeholder-img mr-2 rounded" width="64" height=""
                         src="{{ user.userincluded.img.url }}" height="64" width="" alt="サンプル画像" align="top">
+    <a href="{% url 'wooys:update_thumbnail' user.userincluded.pk %}" class="btn btn-primary">サムネイル画像更新</a>
     {% else %}
     <img class="bd-placeholder-img mr-2 rounded" width="64" height="64"
                         src="http://placehold.jp/32x32.png?text=なし" height="32" width="32" alt="サンプル画像" align="top">
+    <a href="{% url 'wooys:cretae_thumbnail' %}" class="btn btn-primary">サムネイル画像登録</a>
     {% endif %}
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">
