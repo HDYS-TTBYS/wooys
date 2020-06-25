@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}サムネイル登録ページ{% endblock title %}
+
+{% block head %}
+<script src="{% static 'get_good_num.js' %}"></script>
+{% endblock head %}
+
+{% block contents %}
+
+<form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-primary">保存</button>
+</form>
+
+
+{% endblock contents %}

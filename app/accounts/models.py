@@ -9,3 +9,15 @@ class CustomUser(AbstractUser):
 
     class Meta:
         verbose_name_plural = "CustomUser"
+
+
+class UserIncluded(models.Model):
+    """ユーザー付属モデル"""
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    img = models.ImageField(upload_to="mediafiles", null=True)
+
+    class Meta:
+        verbose_name_plural = "Thumbnail"
+
+    def __str__(self):
+        return self.img.url

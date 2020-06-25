@@ -15,7 +15,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, Count
 from django.utils import timezone
 
-from accounts.models import CustomUser
+from accounts.models import CustomUser, UserIncluded
+from accounts.forms import UserIncludedCreateForm
+
 from .models import UploadImageByFile, Article, Like, Browsing
 from .forms import ArticleCreateForm
 
@@ -224,7 +226,6 @@ class MyPageView(LoginRequiredMixin, generic.ListView):
         return articles
 
 
-
 @ require_POST
 @ csrf_exempt
 def UploadByFile(request):
@@ -300,3 +301,21 @@ def Goodfunc(request, *args, **kwargs):
             "good_num": good_num,
         }
         return JsonResponse(response)
+
+
+class ThumbnailCreateView(LoginRequiredMixin, generic.CreateView):
+    """サムネイル登録ページ"""
+    model = UserIncluded
+    template_name = "wooys/thumbnail.html"
+    form_class = UserIncludedCreateForm
+    success_url = reverse_lazy("wooys:index")
+
+    def form_valid(self, form):
+        user_included = form.save(commit=False)
+        user_included.user = self.request.user
+        user_included.save()
+        messages.success(self.request, "サムネイルの登録に成功しました。")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "サムネイルの登録に失敗しました。")

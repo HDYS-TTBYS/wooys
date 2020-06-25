@@ -5,10 +5,21 @@
 
 {% block head %}
 <script src="{% static 'get_good_num.js' %}"></script>
+<link rel="stylesheet" href="{% static 'upload-label.css' %}">
 {% endblock head %}
 
 {% block contents %}
 <main role="main" class="container">
+
+    <a href="{% url 'wooys:thumbnail' %}" class="btn btn-primary">サムネイル画像選択</a>
+
+    {% if "{{ user.userincluded.img.url }}" %}
+    <img class="bd-placeholder-img mr-2 rounded" width="64" height=""
+                        src="{{ user.userincluded.img.url }}" height="64" width="" alt="サンプル画像" align="top">
+    {% else %}
+    <img class="bd-placeholder-img mr-2 rounded" width="64" height="64"
+                        src="http://placehold.jp/32x32.png?text=なし" height="32" width="32" alt="サンプル画像" align="top">
+    {% endif %}
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">
         <h6 class="border-bottom border-gray pb-2 mb-0">マイページ</h6>
@@ -17,8 +28,13 @@
         <a href="{% url 'wooys:update' article.pk %}">
             <div class="media text-muted pt-3">
                 <div class="logo">
-                    <img class="bd-placeholder-img mr-2 rounded" width="32" height="32"
+                        {% if "{{ article.user.userincluded.img.url }}" %}
+                        <img class="bd-placeholder-img mr-2 rounded" width="64" height=""
+                        src="{{ article.user.userincluded.img.url }}" height="64" width="" alt="サンプル画像" align="top">
+                        {% else %}
+                        <img class="bd-placeholder-img mr-2 rounded" width="64" height="64"
                         src="http://placehold.jp/32x32.png?text=なし" height="32" width="32" alt="サンプル画像" align="top">
+                        {% endif %}
                     {{ article.user }}
                 </div>
                 <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
