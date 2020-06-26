@@ -26,6 +26,7 @@ class Article(models.Model):
     search_tag = models.CharField(
         verbose_name="検索タグ (100文字以内空白区切りで入力してください)", max_length=100)
     content = models.TextField(verbose_name="本文", blank=True, null=True)
+    is_release = models.BooleanField(verbose_name='公開する', default=False)
     created_at = models.DateTimeField(verbose_name="作成日時", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="更新日時", auto_now=True)
 

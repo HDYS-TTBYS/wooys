@@ -64,7 +64,7 @@
 
         {% comment %} buttom navbar {% endcomment %}
         <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
-            <a class="navbar-brand" href="{% url 'wooys:index' %}">Wooys</a>
+            <a class="navbar-brand" href="">Wooys{{ request.path }}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -72,12 +72,37 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
                     {% if user.is_authenticated %}
+
+                    {% if request.path == "/" %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'wooys:index' %}">トップページ</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'wooys:index' %}">トップページ</a>
+                    </li>
+                    {% endif %}
+
+                    {% if request.path == "/create/" %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url "wooys:create" %}">記事作成</a>
+                    </li>
+                    {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "wooys:create" %}">記事作成</a>
                     </li>
+                    {% endif %}
+
+                    {% if request.path == "/mypage/" %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url "wooys:mypage" %}">マイページ</a>
+                    </li>
+                    {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "wooys:mypage" %}">マイページ</a>
                     </li>
+                    {% endif %}
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'account_logout' %}">ログアウト</a>
                     </li>

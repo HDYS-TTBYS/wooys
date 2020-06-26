@@ -46,48 +46,61 @@ class IndexView(generic.ListView):
             if s_word == "like":
                 # 総合いいね順
                 articles = Article.objects.filter(
-                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_like=Count('like')).order_by('-num_like')
+                    is_release=True).filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(
+                        num_like=Count('like')).order_by('-num_like')
             elif s_word == "weekLike":
                 # 週間いいね順
                 seven_days_ago = timezone.now() - datetime.timedelta(days=7)
                 articles = Article.objects.filter(
-                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_like=Count('like', filter=Q(
-                        like__created_at__gte=seven_days_ago))).order_by('-num_like')
+                    is_release=True).filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(
+                        num_like=Count('like', filter=Q(
+                            like__created_at__gte=seven_days_ago))).order_by('-num_like')
             elif s_word == "browse":
                 # 総合閲覧数順
                 articles = Article.objects.filter(
-                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_browse=Count('browsing')).order_by('-num_browse')
+                    is_release=True).filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(
+                        num_browse=Count('browsing')).order_by('-num_browse')
             elif s_word == "weekBrowse":
                 # 週間閲覧数順
                 seven_days_ago = timezone.now() - datetime.timedelta(days=7)
                 articles = Article.objects.filter(
-                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_browse=Count('browsing', filter=Q(
-                        like__created_at__gte=seven_days_ago))).order_by('-num_browse')
+                    is_release=True).filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(
+                        num_browse=Count('browsing', filter=Q(
+                            like__created_at__gte=seven_days_ago))).order_by('-num_browse')
             else:
                 articles = Article.objects.filter(
+                    is_release=True).filter(
                     Q(title__in=q_word) | Q(search_tag__in=q_word)).order_by("-created_at")
         else:
             # 検索文字列なし
             if s_word == "like":
                 # 総合いいね数
-                articles = Article.objects.annotate(
-                    num_like=Count('like')).order_by('-num_like')
+                articles = Article.objects.filter(
+                    is_release=True).annotate(num_like=Count('like')).order_by('-num_like')
             elif s_word == "weekLike":
                 # 週間いいね数
                 seven_days_ago = timezone.now() - datetime.timedelta(days=7)
-                articles = Article.objects.annotate(num_like=Count('like', filter=Q(
-                    like__created_at__gte=seven_days_ago))).order_by('-num_like')
+                articles = Article.objects.filter(
+                    is_release=True).annotate(num_like=Count('like', filter=Q(
+                        like__created_at__gte=seven_days_ago))).order_by('-num_like')
             elif s_word == "browse":
                 # 総合閲覧数
-                articles = Article.objects.annotate(
+                articles = Article.objects.filter(
+                    is_release=True).annotate(
                     num_browse=Count('browsing')).order_by('-num_browse')
             elif s_word == "weekBrowse":
                 # 週間閲覧数
                 seven_days_ago = timezone.now() - datetime.timedelta(days=7)
-                articles = Article.objects.annotate(num_browse=Count('browsing', filter=Q(
-                    like__created_at__gte=seven_days_ago))).order_by('-num_browse')
+                articles = Article.objects.filter(
+                    is_release=True).annotate(num_browse=Count('browsing', filter=Q(
+                        like__created_at__gte=seven_days_ago))).order_by('-num_browse')
             else:
-                articles = Article.objects.all().order_by("-created_at")
+                articles = Article.objects.filter(
+                    is_release=True).order_by("-created_at")
         return articles
 
 
@@ -130,7 +143,7 @@ class ArticleUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = ArticleCreateForm
 
     def get_success_url(self):
-        return reverse_lazy("wooys:update")
+        return reverse_lazy("wooys:mypage")
 
     def form_valid(self, form):
         request_user = self.request.user
@@ -176,53 +189,70 @@ class MyPageView(LoginRequiredMixin, generic.ListView):
         if q_word is not None:
             q_word.split()
         s_word = self.request.GET.get('sort')
+        # リクエストしたユーザーが作成した記事のみ
         if q_word:
             # 検索文字列あり
             if s_word == "like":
                 # 総合いいね順
                 articles = Article.objects.filter(
-                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_like=Count('like')).order_by('-num_like')
+                    user=self.request.user).filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(
+                        num_like=Count('like')).order_by('-num_like')
             elif s_word == "weekLike":
                 # 週間いいね順
                 seven_days_ago = timezone.now() - datetime.timedelta(days=7)
                 articles = Article.objects.filter(
-                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_like=Count('like', filter=Q(
-                        like__created_at__gte=seven_days_ago))).order_by('-num_like')
+                    user=self.request.user).filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(
+                        num_like=Count('like', filter=Q(
+                            like__created_at__gte=seven_days_ago))).order_by('-num_like')
             elif s_word == "browse":
                 # 総合閲覧数順
                 articles = Article.objects.filter(
-                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_browse=Count('browsing')).order_by('-num_browse')
+                    user=self.request.user).filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(
+                        num_browse=Count('browsing')).order_by('-num_browse')
             elif s_word == "weekBrowse":
                 # 週間閲覧数順
                 seven_days_ago = timezone.now() - datetime.timedelta(days=7)
                 articles = Article.objects.filter(
-                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(num_browse=Count('browsing', filter=Q(
-                        like__created_at__gte=seven_days_ago))).order_by('-num_browse')
+                    user=self.request.user).filter(
+                    Q(title__in=q_word) | Q(search_tag__in=q_word)).annotate(
+                        num_browse=Count('browsing', filter=Q(
+                            like__created_at__gte=seven_days_ago))).order_by('-num_browse')
             else:
                 articles = Article.objects.filter(
+                    user=self.request.user).filter(
                     Q(title__in=q_word) | Q(search_tag__in=q_word)).order_by("-created_at")
         else:
             # 検索文字列なし
             if s_word == "like":
                 # 総合いいね数
-                articles = Article.objects.annotate(
+                articles = Article.objects.filter(
+                    user=self.request.user).annotate(
                     num_like=Count('like')).order_by('-num_like')
             elif s_word == "weekLike":
                 # 週間いいね数
                 seven_days_ago = timezone.now() - datetime.timedelta(days=7)
-                articles = Article.objects.annotate(num_like=Count('like', filter=Q(
-                    like__created_at__gte=seven_days_ago))).order_by('-num_like')
+                articles = Article.objects.filter(
+                    user=self.request.user).annotate(
+                    num_like=Count('like', filter=Q(
+                        like__created_at__gte=seven_days_ago))).order_by('-num_like')
             elif s_word == "browse":
                 # 総合閲覧数
-                articles = Article.objects.annotate(
+                articles = Article.objects.filter(
+                    user=self.request.user).annotate(
                     num_browse=Count('browsing')).order_by('-num_browse')
             elif s_word == "weekBrowse":
                 # 週間閲覧数
                 seven_days_ago = timezone.now() - datetime.timedelta(days=7)
-                articles = Article.objects.annotate(num_browse=Count('browsing', filter=Q(
-                    like__created_at__gte=seven_days_ago))).order_by('-num_browse')
+                articles = Article.objects.filter(
+                    user=self.request.user).annotate(
+                    num_browse=Count('browsing', filter=Q(
+                        like__created_at__gte=seven_days_ago))).order_by('-num_browse')
             else:
-                articles = Article.objects.all().order_by("-created_at")
+                articles = Article.objects.filter(
+                    user=self.request.user).order_by("-created_at")
         return articles
 
 

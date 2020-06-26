@@ -5,14 +5,13 @@
 
 {% block head %}
 <script src="{% static 'get_good_num.js' %}"></script>
-<link rel="stylesheet" href="{% static 'upload-label.css' %}">
 {% endblock head %}
 
 {% block contents %}
 <main role="main" class="container">
 
 
-    {% if "{{ user.userincluded.img.url }}" %}
+    {% if user.userincluded.img.url %}
     <img class="bd-placeholder-img mr-2 rounded" width="64" height=""
                         src="{{ user.userincluded.img.url }}" height="64" width="" alt="サンプル画像" align="top">
     <a href="{% url 'wooys:update_thumbnail' user.userincluded.pk %}" class="btn btn-primary">サムネイル画像更新</a>
@@ -47,6 +46,10 @@
                         getGoodNum({{ article.pk }},{{ user.id|default_if_none:"" }});
                     </script>
                 </p>
+                {% if article.is_release %}
+                <button class="btn btn-lg btn-primary btn-sm">公開中</button>
+                {% endif %}
+
             </div>
         </a>
 
