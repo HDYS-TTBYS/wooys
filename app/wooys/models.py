@@ -45,8 +45,32 @@ class Article(models.Model):
         else:
             return 0
 
+    def get_comment_num(self):
+        if self.comment_set.count():
+            return self.comment_set.count()
+        else:
+            return 0
+
+    def get_comment(self):
+        if self.comment_set.all():
+            return self.comment_set.all()
+        else:
+            return 0
+
     def __str__(self):
         return self.title
+
+
+class Comment(models.Model):
+    """記事コメントモデル"""
+    article = models.ForeignKey(
+        'Article', verbose_name="記事", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        CustomUser, verbose_name="ユーザー", on_delete=models.PROTECT)
+    title = models.CharField(verbose_name="タイトル 40文字以内", max_length=40)
+    content = models.TextField(verbose_name="本文", blank=True, null=True)
+    created_at = models.DateTimeField(verbose_name="作成日時", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="更新日時", auto_now=True)
 
 
 class Like(models.Model):

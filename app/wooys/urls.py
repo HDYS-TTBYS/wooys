@@ -19,5 +19,8 @@ urlpatterns = [
          name="cretae_thumbnail"),
     path("update-thumbnail/<int:pk>/", views.ThumbnailUpdateView.as_view(),
          name="update_thumbnail"),
+    path("create-comment/<int:pk>/", views.ArticleCommentCreateView.as_view(),
+         name="create_comment"),
+
 
 ]

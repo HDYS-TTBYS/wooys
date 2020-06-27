@@ -40,7 +40,7 @@
             <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <strong class="d-block text-gray-dark">{{ article.title }} </strong>
                 <br>
-                {{ article.created_at }}に作成 {{ article.updated_at }}に更新
+                {{ article.created_at }}に作成 {{ article.updated_at }}に更新 閲覧数:{{ article.get_browse_num }}
             </p>
         
         <button type="button" id="good_button" class="btn btn-primary">
@@ -54,11 +54,9 @@
         </script>
     </div>
 
-    <h1>{{ object.title }}</h1>
+    <h1>{{ article.title }}</h1>
 
-    <div id="id_content" style="display:none;">{{ object.content }}</div>
-
-
+    <div id="id_content" style="display:none;">{{ article.content }}</div>
 
     <div id="quill-html"></div>
 
@@ -68,14 +66,60 @@
     </script>
 
 
+    <h6>記事ここまで</h6>
+    <hr>
+    <h2>コメント</h2>
+
+        {% if article.get_comment %}
+        
+            {% for comment in article.get_comment %}
+
+            <div class="media text-muted pt-3">
+                <div class="logo">
+                        {% if "{{ comment.user.userincluded.img.url }}" %}
+                        <img class="bd-placeholder-img mr-2 rounded" width="64" height=""
+                        src="{{ comment.user.userincluded.img.url }}" height="64" width="" alt="サンプル画像" align="top">
+                        {% else %}
+                        <img class="bd-placeholder-img mr-2 rounded" width="64" height="64"
+                        src="http://placehold.jp/32x32.png?text=なし" height="32" width="32" alt="サンプル画像" align="top">
+                        {% endif %}
+                    {{ comment.user.username }}
+
+                    
+                </div>
+                <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                    <strong class="d-block text-gray-dark">{{ comment.title }} </strong>
+                    <br>
+                    {{ comment.created_at }}に作成 {{ comment.updated_at }}に更新
+                </p>
+
+            </div>
+
+            <div id="comment_content{{ comment.pk }}" style="display:none;">{{ comment.content }}</div>
+
+            <div id="quill-html{{ comment.pk }}"></div>
+
+            <script>
+                var data = document.getElementById("comment_content{{ comment.pk }}").innerHTML
+                var quill = QuillPageMake("quill-html{{ comment.pk }}", data);
+            </script>
+            
+            {% endfor %}
+        {% else %}
+            <p>コメントがありません。</p>
+        {% endif %}
+
+
+
+
+
 
     <form class="comment" name="comment" id="comment" method="POST" enctype="multipart/form-data">{% csrf_token %}
+    
+        <a class="btn btn-primary" href="{% url 'wooys:create_comment' article.pk %}" role="button">コメントを作成</a>
 
-        <div id="editor"></div>
-
-
-        <button class="btn btn-lg btn-primary" id="comment">コメント</button>
     </form>
+    
 
 
 

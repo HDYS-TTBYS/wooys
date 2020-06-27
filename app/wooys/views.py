@@ -4,7 +4,7 @@ import datetime
 
 
 from django.views import generic
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -18,8 +18,8 @@ from django.utils import timezone
 from accounts.models import CustomUser, UserIncluded
 from accounts.forms import UserIncludedCreateForm
 
-from .models import UploadImageByFile, Article, Like, Browsing
-from .forms import ArticleCreateForm
+from .models import UploadImageByFile, Article, Like, Browsing, Comment
+from .forms import ArticleCreateForm, ArticleCommentCreateForm
 
 from django.conf import settings
 
@@ -112,9 +112,9 @@ class ArticleCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("wooys:index")
 
     def form_valid(self, form):
-        diary = form.save(commit=False)
-        diary.user = self.request.user
-        diary.save()
+        article = form.save(commit=False)
+        article.user = self.request.user
+        article.save()
         messages.success(self.request, "記事を作成しました。")
         return super().form_valid(form)
 
@@ -374,3 +374,26 @@ class ThumbnailUpdateView(LoginRequiredMixin, generic.UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, "サムネイルの更新に失敗しました。")
         return super().form_invalid(form)
+
+
+class ArticleCommentCreateView(LoginRequiredMixin, generic.CreateView):
+    """記事コメント作成ページ"""
+    model = Comment
+    template_name = "wooys/create_comment.html"
+    form_class = ArticleCommentCreateForm
+
+    def get_success_url(self):
+        return reverse('wooys:detail', kwargs={'pk': self.object.article.id})
+
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        comment.user = self.request.user
+        article_pk = self.kwargs['pk']
+        article = Article.objects.get(pk=article_pk)
+        comment.article = article
+        comment.save()
+        messages.success(self.request, "コメントを作成しました。")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "コメントの作成に失敗しました。")

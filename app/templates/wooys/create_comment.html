@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}記事コメント作成{% endblock title %}
+
+{% block head %}
+
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/tomorrow-night-bright.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+<!-- テキストエディタ「Quilljs」のライブラリ -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+<link href="https://cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet" />
+<!-- Quillカスタマイズjs -->
+<script type="text/javascript" src="{% static 'create.js' %}"></script>
+
+{% endblock head %}
+
+{% block contents %}
+
+<div class="container">
+
+    <form class="create" name="create" id="create" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+
+        <div id="quill-editor"></div>
+
+        <br>
+
+        <button class="btn btn-lg btn-primary" id="submit">作成</button>
+    </form>
+
+    <script>
+        var quill = QuillEditorMake("quill-editor");
+        document.getElementById("submit").addEventListener("click", () => {
+            data = quill.getContents()
+            console.log(data);
+            document.getElementById("id_content").value = JSON.stringify(data)
+        })
+        quill.on('text-change', function(delta, oldDelta, source) {
+            data = quill.getContents()
+            console.log(data);
+            document.getElementById("id_content").value = JSON.stringify(data)
+        });
+        document.getElementById("id_content").style.display = "none";
+        
+    </script>
+
+</div>
+
+
+{% endblock contents %}
