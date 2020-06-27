@@ -32,7 +32,7 @@
         <br>
 
         <button class="btn btn-lg btn-primary" id="submit">更新</button>
-        {% comment %} <a class="btn btn-danger btn-lg" href="{% url 'wooys:' comment.pk %}">削除</a> {% endcomment %}
+        <a class="btn btn-danger btn-lg" href="{% url 'wooys:delete_comment' comment.pk %}">削除</a>
     </form>
 
     <script>

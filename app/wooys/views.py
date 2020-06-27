@@ -422,3 +422,22 @@ class ArticleCommentUpdateView(LoginRequiredMixin, generic.UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, "記事の更新に失敗しました。")
         return super().form_invalid(form)
+
+
+class ArticleCommentDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """記事コメント削除ページ"""
+    model = Comment
+    template_name = "wooys/delete.html"
+
+    def get_success_url(self):
+        return reverse('wooys:detail', kwargs={'pk': self.object.article.id})
+
+    def delete(self, request, *args, **kwargs):
+        request_user = self.request.user
+        is_delete = Comment.objects.filter(user=request_user)
+        if is_delete:
+            messages.success(self.request, "記事コメントを削除しました。")
+            return super().delete(request, *args, **kwargs)
+        else:
+            messages.warning(self.request, "記事コメントを削除する権限がありません。")
+            return redirect("wooys:index")
