@@ -92,6 +92,9 @@
                     <br>
                     {{ comment.created_at }}に作成 {{ comment.updated_at }}に更新
                 </p>
+                {% if user == comment.user %}
+                <a class="btn btn-lg btn-primary btn-sm" href="{% url 'wooys:update_comment' comment.pk %}" role="button">コメントを更新</a>
+                {% endif %}
 
             </div>
 

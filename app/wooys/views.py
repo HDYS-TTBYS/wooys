@@ -397,3 +397,28 @@ class ArticleCommentCreateView(LoginRequiredMixin, generic.CreateView):
 
     def form_invalid(self, form):
         messages.error(self.request, "コメントの作成に失敗しました。")
+
+
+class ArticleCommentUpdateView(LoginRequiredMixin, generic.UpdateView):
+    """記事コメントアップデートページ"""
+    model = Comment
+    template_name = "wooys/update_comment.html"
+    form_class = ArticleCommentCreateForm
+
+    def get_success_url(self):
+        return reverse('wooys:detail', kwargs={'pk': self.object.article.id})
+
+    def form_valid(self, form):
+        request_user = self.request.user
+        comment = Comment.objects.filter(pk=self.kwargs['pk'])
+        is_update = comment.user = request_user
+        if is_update:
+            messages.success(self.request, "記事コメントを更新しました。")
+            return super().form_valid(form)
+        else:
+            messages.warning(self.request, "記事コメントを更新する権限がありません。")
+            return redirect("wooys:index")
+
+    def form_invalid(self, form):
+        messages.error(self.request, "記事の更新に失敗しました。")
+        return super().form_invalid(form)
