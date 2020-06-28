@@ -27,7 +27,10 @@ SECRET_KEY = SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = ["*"]
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = [os.environ.get("DOMAIN")]
 
 
 # Application definition
@@ -185,7 +188,7 @@ AUTHENTICATION_BACKENDS = (
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # 認証方法をメールアドレスにする
 ACCOUNT_USERNAME_REQUIRED = True  # ユーザー名を要求する
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # メールを送信する
-DEFAULT_FROM_EMAIL = SERVER_EMAIL = "admin@wooys.work"
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = "admin@"+os.environ.get("DOMAIN")
 ACCOUNT_EMAIL_REQUIRED = True  # メールアドレスを要求する
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  # サインインメール確認後自動でログイン
 LOGIN_REDIRECT_URL = 'wooys:index'

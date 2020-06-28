@@ -12,12 +12,7 @@
     <link rel="icon" href="{% static 'img/favicon.ico' %}">
     <title>{% block title %}{% endblock title %}</title>
 
-    {% comment %} pace.js {% endcomment %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/black/pace-theme-loading-bar.min.css">
 
-    <link rel="stylesheet" href="{% static 'pace.css' %}">
 
     <!-- Bootstrap core CSS -->
     <link href="{% static '/bootstrap-4.5.0-examples/assets/dist/css/bootstrap.css' %}" rel="stylesheet">
@@ -25,6 +20,9 @@
     <link rel="stylesheet" href="{% static 'mystyle.css' %}">
     <!-- Custom styles for this template -->
     <link href="{% static '/bootstrap-4.5.0-examples/offcanvas/offcanvas.css' %}" rel="stylesheet">
+
+    {% comment %} ロダッシュ {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
 
     <script src="{% static 'form_select.js' %}"></script>
 

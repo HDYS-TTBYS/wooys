@@ -257,7 +257,6 @@ class MyPageView(LoginRequiredMixin, generic.ListView):
 
 
 @ require_POST
-@ csrf_exempt
 def UploadByFile(request):
     """/UploadByFile で呼び出される。 quillの画像アップロードAPI"""
     # アップロードされたファイルを保存する。
@@ -283,7 +282,6 @@ def UploadByFile(request):
         return json_response
 
 
-@ csrf_exempt
 def Goodfunc(request, *args, **kwargs):
     """いいね機能
     POST
@@ -338,7 +336,7 @@ class ThumbnailCreateView(LoginRequiredMixin, generic.CreateView):
     model = UserIncluded
     template_name = "wooys/thumbnail.html"
     form_class = UserIncludedCreateForm
-    success_url = reverse_lazy("wooys:index")
+    success_url = reverse_lazy("wooys:mypage")
 
     def form_valid(self, form):
         user_included = form.save(commit=False)
