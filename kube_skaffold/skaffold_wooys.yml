@@ -41,9 +41,6 @@ spec:
               value: Asia/Tokyo
           ports:
             - containerPort: 80
-          # volumeMounts:
-          #   - name: staticfiles-volume
-          #     mountPath: /usr/src/app/staticfiles
         - name: django
           image: hdys/wooys-django
           envFrom:
@@ -54,9 +51,3 @@ spec:
               value: Asia/Tokyo
           ports:
             - containerPort: 8000
-      #     volumeMounts:
-      #       - name: staticfiles-volume
-      #         mountPath: /usr/share/nginx/html/staticfilrs
-      # volumes:
-      #   - name: staticfiles-volume
-      #     emptyDir: {}

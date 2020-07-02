@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+from django.contrib.messages import constants as messages
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,19 +27,39 @@ SECRET_KEY = SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = ["*"]
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = [os.environ.get("DOMAIN")]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # 自作
+    'wooys.apps.WooysConfig',
+    'accounts.apps.AccountsConfig',
+
+    # install
+    'storages',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'django_ses',
+    'widget_tweaks',
+    'imagekit',
+
+
+    # default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'storages',
+
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -55,7 +78,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),  # テンプレートを置く場所
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -108,9 +133,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ja'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tokyo'
 
 USE_I18N = True
 
@@ -118,8 +143,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-
+# S3 設定
 USE_S3 = os.getenv('USE_S3') == 'TRUE'
 
 if USE_S3:
@@ -142,3 +166,91 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
+APPEND_SLASH = False
+
+# SES設定
+AWS_SES_ACCESS_KEY_ID = os.environ.get("AWS_SES_ACCESS_KEY_ID")
+AWS_SES_SECRET_ACCESS_KEY = os.environ.get("AWS_SES_SECRET_ACCESS_KEY")
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND")
+
+
+# ユーザーモデル
+AUTH_USER_MODEL = "accounts.CustomUser"
+
+# auth
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+    # 一般（メールアドレス）
+    'allauth.account.auth_backends.AuthenticationBackend',
+    # 管理者（ユーザーネーム）
+    'django.contrib.auth.backends.ModelBackend',
+)
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # 認証方法をメールアドレスにする
+ACCOUNT_USERNAME_REQUIRED = True  # ユーザー名を要求する
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # メールを送信する
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = "admin@"+os.environ.get("DOMAIN")
+ACCOUNT_EMAIL_REQUIRED = True  # メールアドレスを要求する
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  # サインインメール確認後自動でログイン
+LOGIN_REDIRECT_URL = 'wooys:index'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'wooys:index'
+ACCOUNT_LOGOUT_ON_GET = True  # ログアウトリンク一発でログアウト
+
+
+# メッセージ
+MESSAGE_TAGS = {
+    messages.ERROR: "alert alert-danger",
+    messages.WARNING: "alert alert-warning",
+    messages.SUCCESS: "alert alert-success",
+    messages.INFO: "alert alert-info",
+}
+
+
+# ロガー設定
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    # ハンドラ
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'dev',
+        }
+    },
+    # ロガー
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        # 追加
+        'wooys': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+
+    # フォーマッター
+    'formatters': {
+        'dev': {
+            'format': '\t'.join([
+                '%(asctime)s',
+                '[%(levelname)s]',
+                '%(pathname)s(Line:%(lineno)d)',
+                '%(message)s'
+            ])
+        }
+    },
+
+
+}
+
+
+INTERNAL_IPS = ['127.0.0.1', '172.26.0.1']
+
+
+def show_toolbar(request):
+    return True
+
+
+SHOW_TOOLBAR_CALLBACK = show_toolbar

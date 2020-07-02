@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  # サービス名は自由に設定
+  django:
+    build:
+      # 読み込むファイル名が`Dockerfile`ではない場合contextに相対パス、dockerfileにファイル名を記載
+      context: ./app
+      dockerfile: Dockerfile.prod
+    # データを永続化させる場合の設定。`host:container`でパスを記載
+    volumes:
+      - ./app/:/usr/src/app/
+    # 指定されたポートは接続されたサービスからアクセス可能
+    expose:
+      - 8000
+    # 環境変数を指定
+    env_file: .env.prod
+    # 接続するサービスを指定
+    depends_on:
+      - postgres
+
+  postgres:
+    # 公式からイメージをpull
+    image: postgres:11.4-alpine
+    # データベースの永続化
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    # 環境変数を指定
+    env_file: .env.prod
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - django

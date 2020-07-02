@@ -1,0 +1,61 @@
+{% extends "account/base.html" %}
+
+{% load static %}
+{% load widget_tweaks %}
+{% load i18n %}
+
+
+{% block title %}ログイン{% endblock %}
+
+{% block head %}
+<link href="{% static 'form_wrapper.css' %}" rel="stylesheet">
+{% endblock head %}
+
+{% block contents %}
+
+
+<div class="container">
+
+    <div class="form_wrapper">
+        <h1>ログイン</h1>
+
+        <p>アカウント未作成の場合、こちらから<a href="{{ signup_url }}">サインイン</a> してください。</p>
+
+        <form class="login" method="POST" action="{% url 'account_login' %}">
+
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+            {% for field in form %}
+            {{ field.label_tag }}
+
+            {{ field|add_class:'form-control' }}
+            {% if field.help_text %}
+            <span class="helptext">{{ field.help_text }}</span>
+            {% endif %}
+            {% if field.errors %}
+            <div class="alert alert-warning">
+                {{ field.errors }}
+            </div>
+            {% else %}
+            {{ field.errors }}
+            {% endif %}
+
+            {% endfor %}
+
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <br>
+            <a class="button secondaryAction" href="{% url 'account_reset_password' %}">パスワードを忘れましたか？</a>
+            <br>
+            <br>
+            <button class="btn btn-lg btn-primary btn-lg" type="submit">ログイン</button>
+
+        </form>
+    </div>
+</div>
+
+
+
+{% endblock %}

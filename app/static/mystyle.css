@@ -1,0 +1,26 @@
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #sort-button {
+            margin: 0 0 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .logo {
+            padding-right: 10px;
+        }
+
+        #test-deploy {
+            margin-left: 10px;
+        }

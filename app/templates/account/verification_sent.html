@@ -1,0 +1,23 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block title %}メールアドレスを確認してください{% endblock %}
+
+{% block head %}
+<link href="{% static 'form_wrapper.css' %}" rel="stylesheet">
+{% endblock head %}
+
+{% block contents %}
+<div class="container">
+    <div class="form_wrapper">
+        <h1>メールアドレスを確認してください</h1>
+
+        <p>確認のメールを送信しました。メールに記載されたリンクをクリックして、ユーザー登録を完了させてください。数分待っても確認のメールが届かない場合はご連絡ください。</p>
+
+    </div>
+</div>
+
+
+{% endblock %}

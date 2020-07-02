@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}サムネイル登録ページ{% endblock title %}
+
+{% block head %}
+<script src="{% static 'get_good_num.js' %}"></script>
+{% endblock head %}
+
+{% block contents %}
+
+<form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-primary">保存</button>
+</form>
+
+<br>
+
+<img class="bd-placeholder-img mr-2 rounded" width="1024" height=""
+src="{{ userincluded.img.url }}" height="1024" width="" alt="サンプル画像" align="top">
+
+
+{% endblock contents %}

@@ -1,0 +1,153 @@
+{% load static %}
+
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="HDYS-TTBYS">
+    <meta name="generator" content="Django==2.2.13">
+    <meta name="description" content="記事投稿ができる登録制サイト">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
+    <title>{% block title %}{% endblock title %}</title>
+
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static '/bootstrap-4.5.0-examples/assets/dist/css/bootstrap.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'mystyle.css' %}">
+    <!-- Custom styles for this template -->
+    <link href="{% static '/bootstrap-4.5.0-examples/offcanvas/offcanvas.css' %}" rel="stylesheet">
+
+    {% comment %} ロダッシュ {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+
+    <script src="{% static 'form_select.js' %}"></script>
+
+    {% block head %}{% endblock head %}
+</head>
+
+<body class="bg-light">
+
+    <div class="container">
+        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
+            <div class="lh-100">
+                <h3 class="mb-0 text-white lh-100">Wooys</h3>
+                <small>wwww</small>
+            </div>
+            <div class="alert alert-warning" role="alert" id="test-deploy">
+                テストデプロイ
+            </div>
+        </div>
+        {% if messages %}
+        <div class="container">
+            <div class="row">
+                <ul class="messages" style="list-style:none;">
+                    {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <div id="wrap">
+
+            {% block contents %}{% endblock contents %}
+
+        </div>
+
+        {% comment %} buttom navbar {% endcomment %}
+        <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+            <a class="navbar-brand" href="">Wooys{{ request.path }}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    {% if user.is_authenticated %}
+
+                        {% if request.path == "/" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'wooys:index' %}">トップページ</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'wooys:index' %}">トップページ</a>
+                        </li>
+                        {% endif %}
+
+                        {% if request.path == "/create/" %}
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{% url "wooys:create" %}">記事作成</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url "wooys:create" %}">記事作成</a>
+                        </li>
+                        {% endif %}
+
+                        {% if request.path == "/mypage/" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url "wooys:mypage" %}">マイページ</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url "wooys:mypage" %}">マイページ</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'account_logout' %}">ログアウト</a>
+                        </li>
+                    {% else %}
+                        {% if request.path == "/" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'wooys:index' %}">トップページ</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'wooys:index' %}">トップページ</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'account_login' %}">ログイン</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <select class="form-control" id="sort-button" name="sort">
+                    <option value="new" id="new">新着順</option>
+                    <option value="weekLike" id="weekLike">週間いいね数</option>
+                    <option value="like" id="like">総合いいね数</option>
+                    <option value="weekBrowse" id="weekBrowse">週間閲覧数</option>
+                    <option value="browse" id="browse">総合閲覧数</option>
+                    </select>
+                    {% if request.GET.sort  %}
+                    <script type="text/javascript">
+                        selectFormValue({{ request.GET.sort }})
+                    </script>
+                    {% endif %}
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"
+                        name="query" value="{{ request.GET.query }}">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">検索</button>
+                </form>
+                
+            </div>
+        </nav>
+        {% comment %} buttom navbar {% endcomment %}
+
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+        </script>
+        <script src="{% static '/bootstrap-4.5.0-examples/assets/dist/js/bootstrap.bundle.js' %}">
+        </script>
+        <script src="{% static '/bootstrap-4.5.0-examples/offcanvas/offcanvas.js' %}"></script>
+
+</body>
+
+</html>

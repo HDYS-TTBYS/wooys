@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}トップページ{% endblock title %}
+
+{% block head %}
+<script src="{% static 'get_good_num.js' %}"></script>
+{% endblock head %}
+
+{% block contents %}
+<main role="main" class="container">
+
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <h6 class="border-bottom border-gray pb-2 mb-0">ホームページ</h6>
+
+        {% for article in article_list %}
+        <a href="{% url 'wooys:detail' article.pk %}">
+            <div class="media text-muted pt-3">
+                <div class="logo">
+                        {% if "{{ article.user.userincluded.img.url }}" %}
+                        <img class="bd-placeholder-img mr-2 rounded" width="64" height=""
+                        src="{{ article.user.userincluded.img.url }}" height="64" width="" alt="サンプル画像" align="top">
+                        {% else %}
+                        <img class="bd-placeholder-img mr-2 rounded" width="64" height="64"
+                        src="http://placehold.jp/32x32.png?text=なし" height="32" width="32" alt="サンプル画像" align="top">
+                        {% endif %}
+                    <div>{{ article.user }}</div>
+
+                </div>
+                <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                    <strong class="d-block text-gray-dark">{{ article.title }} </strong>
+                    <br>
+                    {{ article.created_at }}に作成 {{ article.updated_at }}に更新
+                    いいね:<span id="good_num_{{ article.pk }}"></span>
+                    <script type="text/javascript">
+                        getGoodNum({{ article.pk }},{{ user.id|default_if_none:"" }})
+                    </script>
+                    閲覧数:{{ article.get_browse_num }}
+
+                </p>
+            </div>
+        </a>
+
+        {% empty %}
+        <p>記事がありません。</p>
+
+
+        {% endfor %}
+
+    </div>
+
+    {% comment %} ページネーション {% endcomment %}
+    {% if is_paginated %}
+    <ul class="pagination">
+        {% comment %} 前ページへのリンク {% endcomment %}
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link"
+                href="?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+        {% comment %} ページ数表示 {% endcomment %}
+        {% for page_num in page_obj.paginator.page_range %}
+        {% if page_obj.number == page_num %}
+        <li class="page-item active">
+            <a class="page-link" href="#">{{ page_num }}</a>
+        </li>
+        {% else %}
+        <li class="page-item">
+            <a class="page-link"
+                href="?page={{ page_num }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ page_num }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        {% comment %} 次ページへのリンク {% endcomment %}
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link"
+                href="?page={{ page_obj.next_page_number}}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+    {% endif %}
+
+
+
+
+
+
+</main>
+{% endblock contents %}
