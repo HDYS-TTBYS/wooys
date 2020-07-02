@@ -7,8 +7,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v4.0.1">
+    <meta name="author" content="HDYS-TTBYS">
+    <meta name="generator" content="Django==2.2.13">
+    <meta name="description" content="記事投稿ができる登録制サイト">
     <link rel="icon" href="{% static 'img/favicon.ico' %}">
     <title>{% block title %}{% endblock title %}</title>
 
@@ -33,14 +34,13 @@
 
     <div class="container">
         <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
-            {% comment %} <img class="mr-3"
-                src="{% static '/bootstrap-4.5.0-examples/assets/brand/bootstrap-outline.svg' %}" alt="" width="48"
-                height="48"> {% endcomment %}
             <div class="lh-100">
                 <h3 class="mb-0 text-white lh-100">Wooys</h3>
                 <small>wwww</small>
             </div>
-
+            <div class="alert alert-warning" role="alert" id="test-deploy">
+                テストデプロイ
+            </div>
         </div>
         {% if messages %}
         <div class="container">
@@ -71,43 +71,51 @@
                 <ul class="navbar-nav mr-auto">
                     {% if user.is_authenticated %}
 
-                    {% if request.path == "/" %}
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'wooys:index' %}">トップページ</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'wooys:index' %}">トップページ</a>
-                    </li>
-                    {% endif %}
+                        {% if request.path == "/" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'wooys:index' %}">トップページ</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'wooys:index' %}">トップページ</a>
+                        </li>
+                        {% endif %}
 
-                    {% if request.path == "/create/" %}
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{% url "wooys:create" %}">記事作成</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url "wooys:create" %}">記事作成</a>
-                    </li>
-                    {% endif %}
+                        {% if request.path == "/create/" %}
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{% url "wooys:create" %}">記事作成</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url "wooys:create" %}">記事作成</a>
+                        </li>
+                        {% endif %}
 
-                    {% if request.path == "/mypage/" %}
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url "wooys:mypage" %}">マイページ</a>
-                    </li>
+                        {% if request.path == "/mypage/" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url "wooys:mypage" %}">マイページ</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url "wooys:mypage" %}">マイページ</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'account_logout' %}">ログアウト</a>
+                        </li>
                     {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url "wooys:mypage" %}">マイページ</a>
-                    </li>
-                    {% endif %}
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_logout' %}">ログアウト</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_login' %}">ログイン</a>
-                    </li>
+                        {% if request.path == "/" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'wooys:index' %}">トップページ</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'wooys:index' %}">トップページ</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'account_login' %}">ログイン</a>
+                        </li>
                     {% endif %}
                 </ul>
                 <form class="form-inline my-2 my-lg-0">

@@ -41,8 +41,6 @@ services:
       - POSTGRES_USER=django_db_user
       - POSTGRES_PASSWORD=password1234
       - POSTGRES_DB=django_db
-    env_file:
-      - .env.db
 
 # トップレベルに書く「名前付きvolumes」は複数サービスから参照できる
 volumes:

@@ -34,7 +34,7 @@ class IndexView(generic.ListView):
     """トップページ"""
     model = Article
     template_name = "wooys/index.html"
-    paginate_by = 3
+    paginate_by = 10
 
     def get_queryset(self):
         q_word = self.request.GET.get('query')
@@ -182,7 +182,7 @@ class MyPageView(LoginRequiredMixin, generic.ListView):
     """マイページ"""
     model = Article
     template_name = "wooys/mypage.html"
-    paginate_by = 3
+    paginate_by = 10
 
     def get_queryset(self):
         q_word = self.request.GET.get('query')
