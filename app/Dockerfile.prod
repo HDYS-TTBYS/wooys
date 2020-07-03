@@ -1,5 +1,5 @@
 # 公式からpython3.7 linuxイメージをpull
-FROM python:3.7-alpine
+FROM python:3.7
 
 # 作業ディレクトリを設定
 WORKDIR /usr/src/app
@@ -13,12 +13,13 @@ ENV PYTHONUNBUFFERED 1
 # ホストのrequirementsをコンテナの作業ディレクトリにコピー
 COPY requirements.txt /usr/src/app/requirements.txt
 
-# pipインストール
-RUN apk update \
-    && apk add --virtual build-deps gcc python3-dev musl-dev \
-    && apk add postgresql-dev \
-    && pip install -r requirements.txt \
-    && apk del build-deps
+#install nc command
+RUN apt-get update && apt-get install -y netcat
+
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt /usr/src/kitschoen-dj/requirements.txt
+RUN pip install -r requirements.txt
 
 # entrypoint.shをコピー
 COPY ./entrypoint.prod.sh /usr/src/app/entrypoint.prod.sh
