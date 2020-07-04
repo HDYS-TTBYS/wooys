@@ -30,7 +30,8 @@ DEBUG = DEBUG = int(os.environ.get('DEBUG', default=0))
 if DEBUG:
     ALLOWED_HOSTS = ["*"]
 else:
-    ALLOWED_HOSTS = [os.environ.get("DOMAIN")]
+    # ALLOWED_HOSTS = [os.environ.get("DOMAIN")]
+    ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -206,44 +207,86 @@ MESSAGE_TAGS = {
 
 
 # ロガー設定
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    # ハンドラ
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'dev',
-        }
-    },
-    # ロガー
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
+if DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        # ハンドラ
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'dev',
+            }
         },
-        # 追加
-        'wooys': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
+        # ロガー
+        'loggers': {
+            'django': {
+                'handlers': ['console'],
+                'level': 'INFO',
+            },
+            # 追加
+            'wooys': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+            },
         },
-    },
 
-    # フォーマッター
-    'formatters': {
-        'dev': {
-            'format': '\t'.join([
-                '%(asctime)s',
-                '[%(levelname)s]',
-                '%(pathname)s(Line:%(lineno)d)',
-                '%(message)s'
-            ])
-        }
-    },
+        # フォーマッター
+        'formatters': {
+            'dev': {
+                'format': '\t'.join([
+                    '%(asctime)s',
+                    '[%(levelname)s]',
+                    '%(pathname)s(Line:%(lineno)d)',
+                    '%(message)s'
+                ])
+            }
+        },
+    }
+else:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        # ロガー
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'INFO',
+            },
+            # 追加
+            'wooys': {
+                'handlers': ['file'],
+                'level': 'INFO',
+            },
+        },
+
+        # ハンドラ
+        'handlers': {
+            'file': {
+                'level': 'INFO',
+                'class': 'logging.handlers.TimedRotatingFileHandler',
+                'filename': os.path.join(BASE_DIR, 'logs/django.log'),
+                'formatter': 'prod',
+                'when': 'D',
+                'interval': 1,
+                'backupCount': 7,
+            },
+        },
 
 
-}
+        # フォーマッター
+        'formatters': {
+            'prod': {
+                'format': '\t'.join([
+                    '%(asctime)s',
+                    '[%(levelname)s]',
+                    '%(pathname)s(Line:%(lineno)d)',
+                    '%(message)s'
+                ])
+            }
+        },
+    }
 
 
 INTERNAL_IPS = ['127.0.0.1', '172.26.0.1']
