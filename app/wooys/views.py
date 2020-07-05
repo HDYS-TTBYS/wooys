@@ -265,8 +265,12 @@ def UploadByFile(request):
     try:
         photo.save()
         # ファイルにアクセスするためのURLを作成する。
-        download_url = "{0}://{1}{2}".format(request.scheme,
-                                             request.get_host(), photo.img.url)
+        if settings.USE_S3:
+            pass
+            download_url = photo.img.url
+        else:
+            download_url = "{0}://{1}{2}".format(request.scheme,
+                                                 request.get_host(), photo.img.url)
         response = {
             "data": download_url
         }
