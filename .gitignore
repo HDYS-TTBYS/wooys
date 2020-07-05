@@ -2,3 +2,4 @@
 *.env*
 /mediafiles
 /postgres_data
+/media

@@ -9,7 +9,7 @@ from accounts.models import CustomUser
 
 class UploadImageByFile(models.Model):
     """イメージアップロードモデル"""
-    img = models.ImageField(upload_to="mediafiles", null=True)
+    img = models.ImageField(upload_to="images", null=True)
 
     class Meta:
         verbose_name_plural = "UploadImageByFile"
