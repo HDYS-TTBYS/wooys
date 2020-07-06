@@ -16,7 +16,8 @@
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
 <link href="https://cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet" />
 <!-- Quillカスタマイズjs -->
-<script type="text/javascript" src="{% static 'update.js' %}"></script>
+<script type="text/javascript" src="{% static 'quill.js' %}"></script>
+<script type="text/javascript" src="{% static 'update_comment.js' %}"></script>
 
 {% endblock head %}
 
@@ -24,7 +25,7 @@
 
 <div class="container">
 
-    <form class="update_form" name="update_form" id="update_form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <form class="update_comment_form" name="update_comment_form" id="update_comment_form" method="POST" enctype="multipart/form-data">{% csrf_token %}
         {{ form.as_p }}
 
         <div id="quill-editor"></div>
@@ -32,21 +33,40 @@
         <br>
 
         <button class="btn btn-lg btn-primary" id="submit">更新</button>
+        <a class="btn btn-lg btn-warning"id="delete-update" href="">一時更新を削除</a>
         <a class="btn btn-danger btn-lg" href="{% url 'wooys:delete_comment' comment.pk %}">削除</a>
     </form>
 
     <script>
-        var data = document.update_form.content.value;
+        {% comment %} sessionStorageにあればその値、無ければform.value {% endcomment %}
+        var data = sessionStorage.getItem('update_comment_id_content_{{ comment.pk }}') ?
+            sessionStorage.getItem('update_comment_id_content_{{ comment.pk }}') :
+            document.update_comment_form.content.value;
+
+        {% comment %} エディター作成 {% endcomment %}
         var quill = QuillUpdateEditorMake("quill-editor", data);
+
+        {% comment %} ボタン押した {% endcomment %}
         document.getElementById("submit").addEventListener("click", () => {
-            data = quill.getContents()
-            document.getElementById("id_content").value = JSON.stringify(data)
-        })
+            data = quill.getContents();
+            document.getElementById("id_content").value = JSON.stringify(data);
+            sessionStorage.setItem('update_comment_id_content_{{ comment.pk }}', JSON.stringify(data));
+        });
+
+        {% comment %} エディターが変化した {% endcomment %}
         quill.on('text-change', function(delta, oldDelta, source) {
             data = quill.getContents()
             document.getElementById("id_content").value = JSON.stringify(data)
+            sessionStorage.setItem('update_comment_id_content_{{ comment.pk }}', JSON.stringify(data));
         });
         document.getElementById("id_content").style.display = "none";
+
+        {% comment %} titleの変更をsessionStorageに保存 {% endcomment %}
+        sessionTitle({{ comment.pk }})
+        setTitle({{ comment.pk }})
+
+        {% comment %} 変更(sessionStorage)を削除 {% endcomment %}
+        deleteUpdate({{ comment.pk }})
         
     </script>
 

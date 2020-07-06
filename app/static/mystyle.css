@@ -24,3 +24,16 @@
         #test-deploy {
             margin-left: 10px;
         }
+
+        .container {
+            margin-left: 0%;
+            margin-right: 0%;
+            padding-left: 0%;
+            padding-right: 0%;
+        }
+
+        .bg-light {
+            width: 98%;
+            margin: 0 auto;
+            max-width: 1000px;
+        }

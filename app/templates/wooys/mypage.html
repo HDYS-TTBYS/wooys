@@ -45,6 +45,7 @@
                     <script type="text/javascript">
                         getGoodNum({{ article.pk }},{{ user.id|default_if_none:"" }});
                     </script>
+                    閲覧数:{{ article.get_browse_num }}
                 </p>
                 {% if article.is_release %}
                 <button class="btn btn-lg btn-primary btn-sm">公開中</button>
