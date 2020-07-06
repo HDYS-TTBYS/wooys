@@ -28,7 +28,7 @@
         <a href="{% url 'wooys:update' article.pk %}">
             <div class="media text-muted pt-3">
                 <div class="logo">
-                        {% if "{{ article.user.userincluded.img.url }}" %}
+                        {% if article.user.userincluded.img.url %}
                         <img class="bd-placeholder-img mr-2 rounded" width="64" height=""
                         src="{{ article.user.userincluded.img.url }}" height="64" width="" alt="サンプル画像" align="top">
                         {% else %}

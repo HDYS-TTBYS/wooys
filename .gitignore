@@ -1,5 +1,4 @@
 /.vscode
 *.env*
-/mediafiles
 /postgres_data
-/media
+/app/media

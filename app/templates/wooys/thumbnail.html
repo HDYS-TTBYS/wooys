@@ -5,19 +5,28 @@
 
 {% block head %}
 <script src="{% static 'get_good_num.js' %}"></script>
+<style>
+#image {
+max-width:100%;
+}
+</style>
 {% endblock head %}
 
 {% block contents %}
 
-<form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
+<div class="container">
+    <form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="save btn btn-primary">保存</button>
-</form>
+    </form>
 
-<br>
+    <br>
 
-<img class="bd-placeholder-img mr-2 rounded" width="1024" height=""
-src="{{ userincluded.img.url }}" height="1024" width="" alt="サンプル画像" align="top">
+    
+    <img id="image" class="bd-placeholder-img mr-2 rounded" src="{{ userincluded.img.url }}" alt="サンプル画像" align="top">
+
+    
+</div>
 
 
 {% endblock contents %}
