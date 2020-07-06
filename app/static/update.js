@@ -114,7 +114,7 @@ function QuillUpdateEditorMake(make_id, json_text) {
         fd.append("image", file);
 
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:8000/uploadByFile/", true);
+        xhr.open("POST", "/uploadByFile/", true);
         // for Django
         // ------------------------------------------------
         let CSRF_KEY_NAME = "csrftoken=";
