@@ -120,6 +120,7 @@ class ArticleCreateView(LoginRequiredMixin, generic.CreateView):
 
     def form_invalid(self, form):
         messages.error(self.request, "記事の作成に失敗しました。")
+        return super().form_invalid(form)
 
 
 class ArticleDetailView(generic.DetailView):
@@ -351,6 +352,7 @@ class ThumbnailCreateView(LoginRequiredMixin, generic.CreateView):
 
     def form_invalid(self, form):
         messages.error(self.request, "サムネイルの登録に失敗しました。")
+        return super().form_invalid(form)
 
 
 class ThumbnailUpdateView(LoginRequiredMixin, generic.UpdateView):
@@ -399,6 +401,7 @@ class ArticleCommentCreateView(LoginRequiredMixin, generic.CreateView):
 
     def form_invalid(self, form):
         messages.error(self.request, "コメントの作成に失敗しました。")
+        return super().form_invalid(form)
 
 
 class ArticleCommentUpdateView(LoginRequiredMixin, generic.UpdateView):
